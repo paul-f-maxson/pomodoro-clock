@@ -11,68 +11,72 @@ const incrementCtxValueAction = (valueName, increment) =>
     [valueName]: ctx => ctx[valueName] + increment,
   });
 
-const alarmRingingState = {
-  id: 'AlarmRinging',
-  activities: ['ringing'],
+const runningState = {
+  id: 'Running',
   states: {
+    WorkTime: {
+      id: 'WorkTime',
+      states: {},
+      on: { CONTINUE: '#EndofWork' },
+    },
     EndofWork: {
       id: 'EndofWork',
       states: {},
       on: {
-        snooze: '#SnoozingEndofWork',
-        switch: '#BreakTime',
+        CONTINUE: '#BreakTime',
+        SNOOZE: '#SnoozingEndofWork',
       },
+    },
+    SnoozingEndofWork: {
+      id: 'SnoozingEndofWork',
+      states: {},
+      on: { CONTINUE: '#BreakTime' },
+    },
+    BreakTime: {
+      id: 'BreakTime',
+      states: {},
+      on: { CONTINUE: '#EndofBreak' },
     },
     EndofBreak: {
       id: 'EndofBreak',
       states: {},
       on: {
-        snooze: '#SnoozingEndofBreak',
-        switch: '#WorkTime',
+        CONTINUE: '#WorkTime',
+        SNOOZE: '#SnoozingEndofBreak',
       },
-    },
-  },
-  initial: 'EndofWork',
-  on: {},
-};
-
-const alarmNotRingingState = {
-  id: 'AlarmNotRinging',
-  states: {
-    WorkTime: {
-      id: 'WorkTime',
-      states: {},
-      on: { 'work-time-over': '#EndofWork' },
-    },
-    BreakTime: {
-      id: 'BreakTime',
-      states: {},
-      on: { 'break-time-over': '#EndofBreak' },
-    },
-    SnoozingEndofWork: {
-      id: 'SnoozingEndofWork',
-      states: {},
-      on: { resume: '#BreakTime' },
     },
     SnoozingEndofBreak: {
       id: 'SnoozingEndofBreak',
       states: {},
-      on: { resume: '#WorkTime' },
+      on: { CONTINUE: '#WorkTime' },
     },
   },
   initial: 'WorkTime',
   on: {},
 };
 
-const runningState = {
-  id: 'Running',
-  states: {
-    AlarmNotRinging: alarmNotRingingState,
-    AlarmRinging: alarmRingingState,
-  },
-  initial: 'AlarmNotRinging',
-  on: {},
-};
+// State Outline
+//
+// PomodoroClock
+//   run -> Running
+//   reset -> Set
+//   Set*
+//
+//   Running
+//     WorkTime*
+//       CONTINUE -> EndofWork
+//     EndofWork
+//       CONTINUE -> BreakTime
+//       SNOOZE -> SnoozingEndofWork
+//     SnoozingEndofWork
+//       CONTINUE -> BreakTime
+//     BreakTime
+//       CONTINUE -> EndofBreak
+//     EndofBreak
+//       CONTINUE -> WorkTime
+//       SNOOZE -> SnoozingEndofBreak
+//     SnoozingEndofBreak
+//       CONTINUE -> WorkTime
 
 const machine = Machine({
   id: 'PomodoroClock',
