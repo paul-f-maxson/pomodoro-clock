@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import clockMachine from './ClockMachine';
 import { interpret } from 'xstate/lib/interpreter';
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
@@ -15,10 +14,15 @@ class App extends Component {
 
   componentDidMount() {
     this.service.start();
+    this.tickerID = setInterval(() => {
+      const { ticking } = this.state.current.context;
+      if (ticking) this.service.send('TICK');
+    }, 1000);
   }
 
   componentWillUnmount() {
     this.service.stop();
+    clearInterval(this.tickerID);
   }
 
   render() {
@@ -31,6 +35,12 @@ class App extends Component {
         <button onClick={() => send('RUN')}>RUN</button>
         <button onClick={() => send('RESET')}>RESET</button>
         <h2>Current States: {current.toStrings()}</h2>
+        <time
+          dateTime={`PT${context.time.getMinutes()}M${context.time.getSeconds()}S`}
+        >
+          {context.time.getMinutes()}:
+          {context.time.getSeconds()}
+        </time>
         <h2>Work Minutes: {context.workMinutes}</h2>
         <button onClick={() => send('INC_WORK_MINS')}>
           INC
