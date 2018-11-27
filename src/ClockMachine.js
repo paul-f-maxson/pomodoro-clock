@@ -24,199 +24,168 @@ function timerAtZero(ctx) {
   return ctx.time.getTime() <= 0;
 }
 
-const workTimeState = {
-  id: 'WorkTime',
-  on: { CONTINUE: '#EndofWork' },
-  onEntry: 'setTimerForWork',
+const runningState = {
+  id: 'Running',
+  on: {},
   initial: 'Working',
   states: {
+    hist: { type: 'history' },
     Working: {
       id: 'Working',
       states: {},
-      on: {
-        '': { target: 'EndofWork', cond: 'timerAtZero' },
-        TICK: { target: 'Working', actions: 'tickTimer' },
-      },
       onEntry: 'turnTickingOn',
       onExit: 'turnTickingOff',
+      on: {
+        // when TICK is recieved, perform the tickTimer action, moving to 'EndofWork' when the timer reaches zero
+        '': { target: 'EndofWork', cond: 'timerAtZero' },
+        TICK: {
+          target: 'Working',
+          actions: 'tickTimer',
+        },
+      },
     },
     EndofWork: {
       id: 'EndofWork',
       states: {},
-      on: {
-        CONTINUE: '#BreakTime',
-        SNOOZE: '#SnoozingEndofWork',
-      },
       onEntry: 'turnRingingOn',
       onExit: 'turnRingingOff',
-    },
-    SnoozingEndofWork: {
-      id: 'SnoozingEndofWork',
-      states: {},
       on: {
-        '': { target: 'EndofWork', cond: 'timerAtZero' },
-        TICK: {
-          target: 'SnoozingEndofWork',
-          actions: 'tickTimer',
+        CONTINUE: {
+          target: 'TakingBreak',
+          actions: 'setTimerForBreak',
+        },
+        SNOOZE: {
+          target: '#Snoozing',
+          actions: 'setTimerForSnooze',
         },
       },
-      onEntry: 'turnTickingOn',
-      onExit: 'turnTickingOff',
     },
-  },
-};
-
-const breakTimeState = {
-  id: 'BreakTime',
-  on: { CONTINUE: '#EndofBreak' },
-  onEntry: 'setTimerForBreak',
-  initial: 'TakingBreak',
-  states: {
     TakingBreak: {
       id: 'TakingBreak',
       states: {},
+      onEntry: 'turnTickingOn',
+      onExit: 'turnTickingOff',
       on: {
+        // when TICK is recieved, perform the tickTimer action, moving to 'EndofBreak' when the timer reaches zero
         '': { target: 'EndofBreak', cond: 'timerAtZero' },
         TICK: {
           target: 'TakingBreak',
           actions: 'tickTimer',
         },
       },
-      onEntry: 'turnTickingOn',
-      onExit: 'turnTickingOff',
     },
     EndofBreak: {
       id: 'EndofBreak',
       states: {},
-      on: {
-        CONTINUE: '#WorkTime',
-        SNOOZE: '#SnoozingEndofBreak',
-      },
       onEntry: 'turnRingingOn',
       onExit: 'turnRingingOff',
-    },
-    SnoozingEndofBreak: {
-      id: 'SnoozingEndofBreak',
-      states: {},
       on: {
-        '': { target: 'EndofBreak', cond: 'timerAtZero' },
-        TICK: {
-          target: 'SnoozingEndofBreak',
-          actions: 'tickTimer',
+        CONTINUE: {
+          target: 'Working',
+          actions: 'setTimerForWork',
+        },
+        SNOOZE: {
+          target: '#Snoozing',
+          actions: 'setTimerForSnooze',
         },
       },
-      onEntry: 'turnTickingOn',
-      onExit: 'turnTickingOff',
     },
   },
 };
 
-const runningState = {
-  id: 'Running',
-  initial: 'WorkTime',
-  on: {},
-  states: {
-    WorkTime: workTimeState,
-    BreakTime: breakTimeState,
-  },
-};
-
-// State Outline
-//
-// PomodoroClock
-//   RUN -> Running
-//   RESET -> Set
-//   Set*
-//
-//   Running
-//     WorkTime*
-//       CONTINUE -> EndofWork
-//       EndofWork
-//         CONTINUE -> BreakTime
-//         SNOOZE -> SnoozingEndofWork
-//       SnoozingEndofWork
-//         CONTINUE -> EndofWork
-//     BreakTime
-//       CONTINUE -> EndofBreak
-//       EndofBreak
-//         CONTINUE -> WorkTime
-//         SNOOZE -> SnoozingEndofBreak
-//       SnoozingEndofBreak
-//         CONTINUE -> EndofBreak
+const defaultContext = (function() {
+  // IIFE
+  const staticDefaults = {
+    workMinutes: 25,
+    breakMinutes: 5,
+    snoozeMinutes: 3,
+    ticking: false,
+    ringing: false,
+  };
+  return {
+    ...staticDefaults,
+    // Dependent defaults
+    time: (() => {
+      // Set time to default workMinutes
+      let tme = new Date(0);
+      tme.setMinutes(staticDefaults.workMinutes);
+      return tme;
+    })(),
+  };
+})();
 
 const machine = Machine(
   {
     id: 'PomodoroClock',
-    context: {
-      workMinutes: 25,
-      breakMinutes: 5,
-      snoozeMinutes: 3,
-      time: (() => {
-        const tme = new Date(0);
-        tme.setMinutes(25);
-        return tme;
-      })(),
-      ticking: false,
-      ringing: false,
+    context: defaultContext,
+    on: {
+      RUN: 'Running',
+      PAUSE: 'Paused',
+      RESUME: 'Running.hist',
+      RESET: {
+        target: 'Set',
+        actions: 'resetContextToDefault',
+      },
+      INC_WORK_MINS: { actions: 'incWorkMins' },
+      DEC_WORK_MINS: { actions: 'decWorkMins' },
+      INC_BREAK_MINS: { actions: 'incBreakMins' },
+      DEC_BREAK_MINS: { actions: 'decBreakMins' },
     },
     initial: 'Set',
-    on: {
-      RESET: '#Set',
-      RUN: '#Running',
-      INC_WORK_MINS: {
-        actions: incrementBoundCtxValueAction(
-          'workMinutes',
-          1,
-          1
-        ),
-      },
-      DEC_WORK_MINS: {
-        actions: incrementBoundCtxValueAction(
-          'workMinutes',
-          -1,
-          1
-        ),
-      },
-      INC_BREAK_MINS: {
-        actions: incrementBoundCtxValueAction(
-          'breakMinutes',
-          1,
-          1
-        ),
-      },
-      DEC_BREAK_MINS: {
-        actions: incrementBoundCtxValueAction(
-          'breakMinutes',
-          -1,
-          1
-        ),
-      },
-      TICK: { actions: 'tickTimer' },
-    },
     states: {
-      Set: { id: 'Set', states: {} },
-      Paused: { id: 'Paused', states: {} },
+      Set: { id: 'Set' },
+      Paused: { id: 'Paused' },
+      Snoozing: {
+        id: 'Snoozing',
+        states: {},
+        on: {
+          // when TICK is recieved, perform the tickTimer action, moving to 'Running.hist' when the timer reaches zero
+          '': {
+            target: 'Running.hist',
+            cond: 'timerAtZero',
+          },
+          TICK: {
+            target: 'Snoozing',
+            actions: 'tickTimer',
+          },
+          CONTINUE: {
+            target: 'Running.hist',
+            actions: 'setTimerToZero',
+          },
+        },
+        onEntry: 'turnTickingOn',
+        onExit: 'turnTickingOff',
+      },
       Running: runningState,
     },
   },
   {
     actions: {
+      resetContextToDefault: assign(defaultContext),
       turnTickingOn: assignCtxBool('ticking', true),
       turnTickingOff: assignCtxBool('ticking', false),
       turnRingingOn: assignCtxBool('ringing', true),
       turnRingingOff: assignCtxBool('ringing', false),
+      setTimerToZero: assign({ time: new Date(0) }),
       setTimerForWork: assign({
         time: ctx => {
-          let newDate = new Date(0);
-          newDate.setMinutes(ctx.workMinutes);
-          return newDate;
+          let newTime = new Date(0);
+          newTime.setMinutes(ctx.workMinutes);
+          return newTime;
         },
       }),
       setTimerForBreak: assign({
         time: ctx => {
-          let newDate = new Date(0);
-          newDate.setMinutes(ctx.breakMinutes);
-          return newDate;
+          let newTime = new Date(0);
+          newTime.setMinutes(ctx.breakMinutes);
+          return newTime;
+        },
+      }),
+      setTimerForSnooze: assign({
+        time: ctx => {
+          let newTime = new Date(0);
+          newTime.setMinutes(ctx.snoozeMinutes);
+          return newTime;
         },
       }),
       tickTimer: assign({
@@ -226,6 +195,26 @@ const machine = Machine(
           else return new Date(0);
         },
       }),
+      incWorkMins: incrementBoundCtxValueAction(
+        'workMinutes',
+        1,
+        1
+      ),
+      decWorkMins: incrementBoundCtxValueAction(
+        'workMinutes',
+        -1,
+        1
+      ),
+      incBreakMins: incrementBoundCtxValueAction(
+        'breakMinutes',
+        1,
+        1
+      ),
+      decBreakMins: incrementBoundCtxValueAction(
+        'breakMinutes',
+        -1,
+        1
+      ),
     },
     guards: {
       timerAtZero,

@@ -8,21 +8,24 @@ class App extends Component {
     current: clockMachine.initialState,
   };
 
-  service = interpret(clockMachine).onTransition(current =>
-    this.setState({ current })
+  service = interpret(clockMachine).onTransition(
+    current => {
+      console.log('Current:', current);
+      this.setState({ current });
+    }
   );
 
   componentDidMount() {
     this.service.start();
-    this.tickerID = setInterval(() => {
+    this.ticker = setInterval(() => {
       const { ticking } = this.state.current.context;
       if (ticking) this.service.send('TICK');
-    }, 1);
+    }, 1000);
   }
 
   componentWillUnmount() {
     this.service.stop();
-    clearInterval(this.tickerID);
+    clearInterval(this.ticker);
   }
 
   render() {
@@ -32,9 +35,41 @@ class App extends Component {
 
     return (
       <>
-        <button onClick={() => send('RUN')}>RUN</button>
-        <button onClick={() => send('RESET')}>RESET</button>
-        <h2>Current States: {current.toStrings()}</h2>
+        <button
+          onClick={() => {
+            send('RUN');
+          }}
+        >
+          RUN
+        </button>
+        <span>/</span>
+        <button
+          onClick={() => {
+            send('RESET');
+          }}
+        >
+          RESET
+        </button>
+        <span>|</span>
+        <button
+          onClick={() => {
+            send('PAUSE');
+          }}
+        >
+          PAUSE
+        </button>
+        <span>/</span>
+        <button
+          onClick={() => {
+            send('RESUME');
+          }}
+        >
+          RESUME
+        </button>
+
+        <h2>
+          Current State: {current.toStrings().slice(-1)}
+        </h2>
         <time
           dateTime={`PT${context.time.getMinutes()}M${context.time.getSeconds()}S`}
         >
@@ -49,6 +84,7 @@ class App extends Component {
         >
           CONTINUE
         </button>
+        <span>|</span>
         <button
           onClick={() => {
             send('SNOOZE');
@@ -56,10 +92,16 @@ class App extends Component {
         >
           SNOOZE
         </button>
+        {context.ringing ? (
+          <span role="img" aria-label="alarm">
+            🚨
+          </span>
+        ) : null}
         <h2>Work Minutes: {context.workMinutes}</h2>
         <button onClick={() => send('INC_WORK_MINS')}>
           INC
         </button>
+        <span>|</span>
         <button onClick={() => send('DEC_WORK_MINS')}>
           DEC
         </button>
@@ -67,6 +109,7 @@ class App extends Component {
         <button onClick={() => send('INC_BREAK_MINS')}>
           INC
         </button>
+        <span>|</span>
         <button onClick={() => send('DEC_BREAK_MINS')}>
           DEC
         </button>
