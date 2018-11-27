@@ -1,13 +1,28 @@
 import { Machine, actions } from 'xstate';
 const { assign } = actions;
 
-const incrementCtxValueAction = (valueName, increment) =>
+const incrementBoundCtxValueAction = (
+  valueName,
+  increment,
+  min = NaN,
+  max = NaN
+) =>
   assign({
-    [valueName]: ctx => ctx[valueName] + increment,
+    [valueName]: ctx => {
+      const newValue = ctx[valueName] + increment;
+      return (newValue >= min || Number.isNaN(min)) &&
+        (newValue <= max || Number.isNaN(max))
+        ? newValue
+        : ctx[valueName];
+    },
   });
 
 const assignCtxBool = (valueName, truthValue) =>
   assign({ [valueName]: truthValue });
+
+function timerAtZero(ctx) {
+  return ctx.time.getTime() <= 0;
+}
 
 const workTimeState = {
   id: 'WorkTime',
@@ -18,6 +33,10 @@ const workTimeState = {
     Working: {
       id: 'Working',
       states: {},
+      on: {
+        '': { target: 'EndofWork', cond: 'timerAtZero' },
+        TICK: { target: 'Working', actions: 'tickTimer' },
+      },
       onEntry: 'turnTickingOn',
       onExit: 'turnTickingOff',
     },
@@ -34,7 +53,13 @@ const workTimeState = {
     SnoozingEndofWork: {
       id: 'SnoozingEndofWork',
       states: {},
-      on: { CONTINUE: '#EndofWork' },
+      on: {
+        '': { target: 'EndofWork', cond: 'timerAtZero' },
+        TICK: {
+          target: 'SnoozingEndofWork',
+          actions: 'tickTimer',
+        },
+      },
       onEntry: 'turnTickingOn',
       onExit: 'turnTickingOff',
     },
@@ -50,6 +75,13 @@ const breakTimeState = {
     TakingBreak: {
       id: 'TakingBreak',
       states: {},
+      on: {
+        '': { target: 'EndofBreak', cond: 'timerAtZero' },
+        TICK: {
+          target: 'TakingBreak',
+          actions: 'tickTimer',
+        },
+      },
       onEntry: 'turnTickingOn',
       onExit: 'turnTickingOff',
     },
@@ -66,7 +98,13 @@ const breakTimeState = {
     SnoozingEndofBreak: {
       id: 'SnoozingEndofBreak',
       states: {},
-      on: { CONTINUE: '#EndofBreak' },
+      on: {
+        '': { target: 'EndofBreak', cond: 'timerAtZero' },
+        TICK: {
+          target: 'SnoozingEndofBreak',
+          actions: 'tickTimer',
+        },
+      },
       onEntry: 'turnTickingOn',
       onExit: 'turnTickingOff',
     },
@@ -113,7 +151,11 @@ const machine = Machine(
       workMinutes: 25,
       breakMinutes: 5,
       snoozeMinutes: 3,
-      time: new Date(0),
+      time: (() => {
+        const tme = new Date(0);
+        tme.setMinutes(25);
+        return tme;
+      })(),
       ticking: false,
       ringing: false,
     },
@@ -122,25 +164,34 @@ const machine = Machine(
       RESET: '#Set',
       RUN: '#Running',
       INC_WORK_MINS: {
-        actions: incrementCtxValueAction('workMinutes', 1),
-      },
-      DEC_WORK_MINS: {
-        actions: incrementCtxValueAction('workMinutes', -1),
-      },
-      INC_BREAK_MINS: {
-        actions: incrementCtxValueAction('breakMinutes', 1),
-      },
-      DEC_BREAK_MINS: {
-        actions: incrementCtxValueAction(
-          'breakMinutes',
-          -1
+        actions: incrementBoundCtxValueAction(
+          'workMinutes',
+          1,
+          1
         ),
       },
-      TICK: {
-        actions: assign({
-          time: (ctx, event) => new Date(ctx.time - 1000),
-        }),
+      DEC_WORK_MINS: {
+        actions: incrementBoundCtxValueAction(
+          'workMinutes',
+          -1,
+          1
+        ),
       },
+      INC_BREAK_MINS: {
+        actions: incrementBoundCtxValueAction(
+          'breakMinutes',
+          1,
+          1
+        ),
+      },
+      DEC_BREAK_MINS: {
+        actions: incrementBoundCtxValueAction(
+          'breakMinutes',
+          -1,
+          1
+        ),
+      },
+      TICK: { actions: 'tickTimer' },
     },
     states: {
       Set: { id: 'Set', states: {} },
@@ -168,6 +219,16 @@ const machine = Machine(
           return newDate;
         },
       }),
+      tickTimer: assign({
+        time: (ctx, event) => {
+          const newTime = new Date(ctx.time - 1000);
+          if (newTime.getTime() > 0) return newTime;
+          else return new Date(0);
+        },
+      }),
+    },
+    guards: {
+      timerAtZero,
     },
   }
 );

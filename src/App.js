@@ -17,7 +17,7 @@ class App extends Component {
     this.tickerID = setInterval(() => {
       const { ticking } = this.state.current.context;
       if (ticking) this.service.send('TICK');
-    }, 1000);
+    }, 1);
   }
 
   componentWillUnmount() {
@@ -41,6 +41,21 @@ class App extends Component {
           {context.time.getMinutes()}:
           {context.time.getSeconds()}
         </time>
+        <br />
+        <button
+          onClick={() => {
+            send('CONTINUE');
+          }}
+        >
+          CONTINUE
+        </button>
+        <button
+          onClick={() => {
+            send('SNOOZE');
+          }}
+        >
+          SNOOZE
+        </button>
         <h2>Work Minutes: {context.workMinutes}</h2>
         <button onClick={() => send('INC_WORK_MINS')}>
           INC
