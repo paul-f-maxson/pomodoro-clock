@@ -1,5 +1,5 @@
 import { interpret } from 'xstate/lib/interpreter';
-import clockMachine from './ClockMachine';
+import clockMachine from './';
 
 test('xstate initializes correctly', () => {
   expect(clockMachine.initialState.value).toBe('Set');

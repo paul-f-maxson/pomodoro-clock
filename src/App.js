@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import clockMachine from './ClockMachine';
+import clockMachine from './PomodoroClockMachine/';
 import { interpret } from 'xstate/lib/interpreter';
 import './App.css';
 
@@ -20,7 +20,7 @@ class App extends Component {
     this.ticker = setInterval(() => {
       const { ticking } = this.state.current.context;
       if (ticking) this.service.send('TICK');
-    }, 1000);
+    }, 1);
   }
 
   componentWillUnmount() {
