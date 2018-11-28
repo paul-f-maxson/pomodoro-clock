@@ -2,8 +2,8 @@ import React, { useEffect, createContext } from 'react';
 
 import Presentational from './Presentational';
 
-import clockMachine from './PomodoroClockMachine/';
-import useMachine from './useMachine';
+import clockMachine from './PomodoroClockMachine';
+import { useMachine } from './utils';
 import './App.css';
 
 const ClockMachineContext = createContext();
