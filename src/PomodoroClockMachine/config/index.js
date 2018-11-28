@@ -39,8 +39,6 @@ const config = {
           actions: 'setTimerToZero',
         },
       },
-      onEntry: 'turnTickingOn',
-      onExit: 'turnTickingOff',
     },
     Running: runningState,
   },

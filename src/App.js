@@ -10,7 +10,6 @@ class App extends Component {
 
   service = interpret(clockMachine).onTransition(
     current => {
-      console.log('Current:', current);
       this.setState({ current });
     }
   );
@@ -18,9 +17,8 @@ class App extends Component {
   componentDidMount() {
     this.service.start();
     this.ticker = setInterval(() => {
-      const { ticking } = this.state.current.context;
-      if (ticking) this.service.send('TICK');
-    }, 1);
+      this.service.send('TICK');
+    }, 1000);
   }
 
   componentWillUnmount() {

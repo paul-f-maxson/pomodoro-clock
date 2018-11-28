@@ -23,8 +23,9 @@ const assignCtxBool = (valueName, truthValue) =>
 
 const actions = {
   resetContextToDefault: assign(defaultContext),
-  turnTickingOn: assignCtxBool('ticking', true),
-  turnTickingOff: assignCtxBool('ticking', false),
+  tickTimer: assign({
+    time: ctx => new Date(ctx.time - 1000),
+  }),
   turnRingingOn: assignCtxBool('ringing', true),
   turnRingingOff: assignCtxBool('ringing', false),
   setTimerToZero: assign({ time: new Date(0) }),
@@ -47,13 +48,6 @@ const actions = {
       let newTime = new Date(0);
       newTime.setMinutes(ctx.snoozeMinutes);
       return newTime;
-    },
-  }),
-  tickTimer: assign({
-    time: (ctx, event) => {
-      const newTime = new Date(ctx.time - 1000);
-      if (newTime.getTime() > 0) return newTime;
-      else return new Date(0);
     },
   }),
   incWorkMins: incrementBoundCtxValueAction(

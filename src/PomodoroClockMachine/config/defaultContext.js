@@ -4,7 +4,6 @@ const defaultContext = (function() {
     workMinutes: 25,
     breakMinutes: 5,
     snoozeMinutes: 6,
-    ticking: false,
     ringing: false,
   };
   return {

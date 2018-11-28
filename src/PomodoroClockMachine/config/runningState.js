@@ -7,8 +7,6 @@ const runningState = {
     Working: {
       id: 'Working',
       states: {},
-      onEntry: 'turnTickingOn',
-      onExit: 'turnTickingOff',
       on: {
         // when TICK is recieved, perform the tickTimer action, moving to 'EndofWork' when the timer reaches zero
         '': { target: 'EndofWork', cond: 'timerAtZero' },
@@ -37,8 +35,6 @@ const runningState = {
     TakingBreak: {
       id: 'TakingBreak',
       states: {},
-      onEntry: 'turnTickingOn',
-      onExit: 'turnTickingOff',
       on: {
         // when TICK is recieved, perform the tickTimer action, moving to 'EndofBreak' when the timer reaches zero
         '': { target: 'EndofBreak', cond: 'timerAtZero' },
