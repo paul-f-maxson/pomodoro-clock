@@ -6,7 +6,6 @@ const config = {
   context: defaultContext,
   on: {
     PAUSE: 'Paused',
-    RESUME: 'Running.hist',
     RESET: 'Set',
     INC_WORK_MINS: { actions: 'incWorkMins' },
     DEC_WORK_MINS: { actions: 'decWorkMins' },
@@ -25,7 +24,10 @@ const config = {
       },
       onEntry: 'resetContextToDefault',
     },
-    Paused: { id: 'Paused' },
+    Paused: {
+      id: 'Paused',
+      on: { RESUME: 'Running.hist' },
+    },
     Snoozing: {
       id: 'Snoozing',
       states: {},
