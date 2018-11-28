@@ -1,9 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { interpret } from 'xstate/lib/interpreter';
 
-export default function useMachine(mcn) {
-  const machine = useMemo(() => mcn, []);
-
+export default function useMachine(machine) {
   const [state, setState] = useState(machine.initialState);
   const [context, setContext] = useState(machine.context);
 
@@ -21,5 +19,5 @@ export default function useMachine(mcn) {
     return () => service.stop();
   }, []);
 
-  return { state, send: service.send, context, service };
+  return { state, context, service, send: service.send };
 }
