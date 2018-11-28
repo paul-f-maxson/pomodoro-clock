@@ -5,13 +5,9 @@ const config = {
   id: 'PomodoroClock',
   context: defaultContext,
   on: {
-    RUN: 'Running',
     PAUSE: 'Paused',
     RESUME: 'Running.hist',
-    RESET: {
-      target: 'Set',
-      actions: 'resetContextToDefault',
-    },
+    RESET: 'Set',
     INC_WORK_MINS: { actions: 'incWorkMins' },
     DEC_WORK_MINS: { actions: 'decWorkMins' },
     INC_BREAK_MINS: { actions: 'incBreakMins' },
@@ -19,7 +15,16 @@ const config = {
   },
   initial: 'Set',
   states: {
-    Set: { id: 'Set' },
+    Set: {
+      id: 'Set',
+      on: {
+        RUN: {
+          target: 'Running.Working',
+          actions: 'setTimerForWork',
+        },
+      },
+      onEntry: 'resetContextToDefault',
+    },
     Paused: { id: 'Paused' },
     Snoozing: {
       id: 'Snoozing',
