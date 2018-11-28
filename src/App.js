@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import clockMachine from './PomodoroClockMachine/';
+
 import { interpret } from 'xstate/lib/interpreter';
+
+import clockMachine from './PomodoroClockMachine/';
 import './App.css';
 
 class App extends Component {
