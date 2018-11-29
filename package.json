@@ -7,6 +7,7 @@
     "react": "^16.7.0-alpha.2",
     "react-dom": "^16.7.0-alpha.2",
     "react-scripts": "2.1.1",
+    "styled-bootstrap-grid": "^1.2.2",
     "styled-components": "^4.1.1",
     "xstate": "^4.1.2"
   },

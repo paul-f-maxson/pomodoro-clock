@@ -1,14 +1,12 @@
 import React, { useEffect, createContext } from 'react';
-
 import Presentational from './Presentational';
 
 import clockMachine from './PomodoroClockMachine';
 import { useMachine } from './utils';
-import './App.css';
 
 const ClockMachineContext = createContext();
 
-const App = () => {
+export default () => {
   const machine = useMachine(clockMachine);
   const { send } = machine;
 
@@ -34,4 +32,3 @@ const App = () => {
 };
 
 export { ClockMachineContext };
-export default App;
