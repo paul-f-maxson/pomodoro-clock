@@ -13,6 +13,14 @@ const GlobalStyle = createGlobalStyle`
 /* eslint-disable jsx-a11y/accessible-emoji */
 /* disabling because rule is followed in the Emoji component */
 
+const Flex = styled.div`
+  display: flex;
+  flex-direction: ${({ col }) => (col ? 'column' : 'row')};
+  align-items: ${({ alignItems }) => alignItems};
+  justify-content: ${({ justifyContent }) =>
+    justifyContent};
+`;
+
 const Title = styled.h1`
   text-align: center;
   font-size: 4rem;
@@ -25,7 +33,7 @@ const PageTitle = () => (
   </Title>
 );
 
-const TitleDivider = styled.hr`
+const HeaderDivider = styled.hr`
   background-color: slateblue;
   border: none;
   border-radius: 0.1rem;
@@ -34,13 +42,43 @@ const TitleDivider = styled.hr`
   margin-bottom: 1rem;
 `;
 
-const Flex = styled.div`
-  display: flex;
-  flex-direction: ${({ col }) => (col ? 'column' : 'row')};
-  align-items: ${({ alignItems }) => alignItems};
-  justify-content: ${({ justifyContent }) =>
-    justifyContent};
+const DigitalClock = styled.time`
+  font-size: 4rem;
+  font-family: Orbitron, Arial, sans-serif;
+  line-height: 1.25;
 `;
+
+const TimeRemaining = ({ minutes, seconds }) => (
+  <DigitalClock dateTime={`PT${minutes}M${seconds}S`}>
+    {String(minutes).padStart(2, '0')}:
+    {String(seconds).padStart(2, '0')}
+  </DigitalClock>
+);
+
+const TimeAmountDisplay = styled.p`
+  font-family: Arial;
+  font-weight: bold;
+  font-size: 1.4rem;
+  margin: 0;
+  margin-left: 0.5rem;
+`;
+
+const TimeAmount = styled.span`
+  font-family: Arial;
+  font-weight: bold;
+  font-size: 3.4rem;
+`;
+
+const UpDown = ({ onUp, onDown, upTitle, downTitle }) => (
+  <Flex col>
+    <Button onClick={onUp}>
+      <CaretSquareUp size="20" title={upTitle} />
+    </Button>
+    <Button onClick={onDown}>
+      <CaretSquareDown size="20" title={downTitle} />
+    </Button>
+  </Flex>
+);
 
 let Button = ({ children, ...props }) => (
   <div {...props}>{children}</div>
@@ -64,61 +102,14 @@ Emoji = styled(Emoji)`
   -ms-user-select: none; /* IE10+ */
 `;
 
-let DigitalClock = ({ minutes, seconds, className }) => (
-  <time
-    className={className}
-    dateTime={`PT${minutes}M${seconds}S`}
-  >
-    {String(minutes).padStart(2, '0')}:
-    {String(seconds).padStart(2, '0')}
-  </time>
-);
-
-DigitalClock = styled(DigitalClock)`
-  font-size: 4rem;
-  font-family: Orbitron, Arial, sans-serif;
-  line-height: 1.25;
-`;
-
-const TimeAmountDisplay = styled.p`
-  font-family: Arial;
-  font-weight: bold;
-  font-size: 1.4rem;
-  margin: 0;
-  margin-left: 0.5rem;
-`;
-
-const TimeAmount = styled.span`
-  font-family: Arial;
-  font-weight: bold;
-  font-size: 3.4rem;
-`;
-
-const UpDown = ({ onUp, onDown }) => (
-  <Flex col>
-    <Button onClick={onUp}>
-      <CaretSquareUp
-        size="20"
-        title="increase break minutes"
-      />
-    </Button>
-    <Button onClick={onDown}>
-      <CaretSquareDown
-        size="20"
-        title="decrease break minutes"
-      />
-    </Button>
-  </Flex>
-);
-
 export {
   GlobalStyle,
-  TitleDivider,
+  HeaderDivider,
   PageTitle,
   Emoji,
   Button,
   UpDown,
-  DigitalClock,
+  TimeRemaining,
   TimeAmountDisplay,
   TimeAmount,
   Flex,

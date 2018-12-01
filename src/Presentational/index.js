@@ -8,11 +8,11 @@ import {
 
 import {
   GlobalStyle,
-  TitleDivider,
+  HeaderDivider,
   PageTitle,
   Button,
   UpDown,
-  DigitalClock,
+  TimeRemaining,
   Emoji,
   TimeAmountDisplay,
   TimeAmount,
@@ -50,13 +50,19 @@ export default () => {
       <Container>
         <Row>
           <Col auto>
-            <PageTitle />
+            <header>
+              {/*  */}
+              <PageTitle />
+              {/*  */}
+            </header>
           </Col>
         </Row>
-        <TitleDivider />
+
+        <HeaderDivider />
+
         <Row>
           <Col auto>
-            <DigitalClock
+            <TimeRemaining
               minutes={context.time.getMinutes()}
               seconds={context.time.getSeconds()}
             />
@@ -65,9 +71,12 @@ export default () => {
             <Row alignItems="center">
               <Col>
                 <Flex row alignItems="center">
+                  {/* Work Minutes  */}
                   <UpDown
                     onUp={senders.INC_WORK_MINS}
                     onDown={senders.DEC_WORK_MINS}
+                    upTitle="increase work minutes"
+                    downTitle="decrease work minutes"
                   />
 
                   <TimeAmountDisplay>
@@ -79,16 +88,21 @@ export default () => {
                     </TimeAmount>{' '}
                     minutes&nbsp;working
                   </TimeAmountDisplay>
+                  {/*  */}
                 </Flex>
               </Col>
             </Row>
             <Row>
               <Col auto>
                 <Flex row alignItems="center">
+                  {/* Break Minutes  */}
                   <UpDown
                     onUp={senders.INC_BREAK_MINS}
                     onDown={senders.DEC_BREAK_MINS}
+                    upTitle="increase break minutes"
+                    downTitle="decrease break minutes"
                   />
+
                   <TimeAmountDisplay>
                     <TimeAmount>
                       {String(
@@ -97,6 +111,7 @@ export default () => {
                     </TimeAmount>{' '}
                     minute&nbsp;break
                   </TimeAmountDisplay>
+                  {/*  */}
                 </Flex>
               </Col>
             </Row>
