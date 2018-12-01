@@ -5,21 +5,27 @@ import {
   Row,
   Col,
 } from 'styled-bootstrap-grid';
+
 import {
   GlobalStyle,
-  Box,
+  TitleDivider,
   PageTitle,
   Button,
+  UpDown,
   DigitalClock,
   Emoji,
   TimeAmountDisplay,
+  TimeAmount,
+  Flex,
 } from './Components';
+
 import { ClockMachineContext } from '../App';
 
 export default () => {
   const machine = useContext(ClockMachineContext);
   const { state, context, send } = machine;
-  var senders = {};
+
+  let senders = {};
   [
     'RUN',
     'RESET',
@@ -34,22 +40,21 @@ export default () => {
   ].forEach(eventName => {
     senders[eventName] = () => send(eventName);
   });
+
   return (
     <>
+      {/* eslint-disable jsx-a11y/accessible-emoji */}
+      {/* disabling because rule is followed in the Emoji component */}
       <GlobalStyle />
       <BaseCSS />
       <Container>
-        <Row justifyContent="center">
+        <Row>
           <Col auto>
-            <Box>
-              <PageTitle>
-                <Emoji label="app title">🍎 ⏳ ⏰</Emoji>
-              </PageTitle>
-            </Box>
+            <PageTitle />
           </Col>
         </Row>
-
-        <Row alignItems="center">
+        <TitleDivider />
+        <Row>
           <Col auto>
             <DigitalClock
               minutes={context.time.getMinutes()}
@@ -57,40 +62,64 @@ export default () => {
             />
           </Col>
           <Col auto>
-            <Row>
+            <Row alignItems="center">
               <Col>
-                <TimeAmountDisplay>
-                  {context.workMinutes} minutes working
-                </TimeAmountDisplay>
+                <Flex row alignItems="center">
+                  <UpDown
+                    onUp={senders.INC_WORK_MINS}
+                    onDown={senders.DEC_WORK_MINS}
+                  />
+
+                  <TimeAmountDisplay>
+                    <TimeAmount>
+                      {String(context.workMinutes).padStart(
+                        2,
+                        '0'
+                      )}
+                    </TimeAmount>{' '}
+                    minutes&nbsp;working
+                  </TimeAmountDisplay>
+                </Flex>
               </Col>
             </Row>
             <Row>
-              <Col>
-                <TimeAmountDisplay>
-                  {context.breakMinutes} minute break
-                </TimeAmountDisplay>
+              <Col auto>
+                <Flex row alignItems="center">
+                  <UpDown
+                    onUp={senders.INC_BREAK_MINS}
+                    onDown={senders.DEC_BREAK_MINS}
+                  />
+                  <TimeAmountDisplay>
+                    <TimeAmount>
+                      {String(
+                        context.breakMinutes
+                      ).padStart(2, '0')}
+                    </TimeAmount>{' '}
+                    minute&nbsp;break
+                  </TimeAmountDisplay>
+                </Flex>
               </Col>
             </Row>
           </Col>
         </Row>
 
         <Button onClick={senders.RUN} label="run clock">
-          <Emoji>🍎 🎬</Emoji>
+          <Emoji>🎬</Emoji>
         </Button>
         <span> / </span>
         <Button onClick={senders.RESET} label="reset clock">
-          <Emoji>🍎❗🔄‍</Emoji>
+          <Emoji>🔄‍</Emoji>
         </Button>
         <span> | </span>
         <Button onClick={senders.PAUSE} label="pause clock">
-          <Emoji>🍎 🧘‍</Emoji>
+          <Emoji>🧘‍</Emoji>
         </Button>
         <span>/</span>
         <Button
           onClick={senders.RESUME}
           label="resume clock"
         >
-          <Emoji>🍎 🏃</Emoji>
+          <Emoji>🏃</Emoji>
         </Button>
 
         <h2>
@@ -101,50 +130,21 @@ export default () => {
           onClick={senders.CONTINUE}
           label="advance clock"
         >
-          <Emoji>🍎 ⏭️</Emoji>
+          <Emoji>⏭️</Emoji>
         </Button>
         <span>|</span>
         <Button
           onClick={senders.SNOOZE}
           label="snooze clock"
         >
-          <Emoji>🛌 💤</Emoji>
+          <Emoji>🛌</Emoji>
         </Button>
         {context.ringing ? (
           <span role="img" aria-label="alarm">
-            ⌛ 🚨 🔔
+            ⌛
           </span>
         ) : null}
         <br />
-        <Emoji label="controls">🎛️</Emoji>
-        <h2>Work Minutes: {context.workMinutes}</h2>
-        <Button
-          onClick={senders.INC_WORK_MINS}
-          label="increase work minutes"
-        >
-          <Emoji>🔺</Emoji>
-        </Button>
-        <span>|</span>
-        <Button
-          onClick={senders.DEC_WORK_MINS}
-          label="decrease work minutes"
-        >
-          <Emoji>🔻</Emoji>
-        </Button>
-        <h2>Break Minutes: {context.breakMinutes}</h2>
-        <Button
-          onClick={senders.INC_BREAK_MINS}
-          label="increase break minutes"
-        >
-          <Emoji>🔺</Emoji>
-        </Button>
-        <span>|</span>
-        <Button
-          onClick={senders.DEC_BREAK_MINS}
-          label="decrease break minutes"
-        >
-          <Emoji>🔻</Emoji>
-        </Button>
       </Container>
     </>
   );

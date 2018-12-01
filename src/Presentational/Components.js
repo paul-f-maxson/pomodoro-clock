@@ -3,33 +3,65 @@ import styled, {
   createGlobalStyle,
 } from 'styled-components';
 
+import { CaretSquareUp } from 'styled-icons/fa-regular/CaretSquareUp';
+import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
+
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Orbitron');
 `;
 
-const Box = styled.div`
-  border: 0.3rem solid palevioletred;
-  border-radius: 3px;
-  margin: 0.1rem;
-`;
+/* eslint-disable jsx-a11y/accessible-emoji */
+/* disabling because rule is followed in the Emoji component */
 
-const PageTitle = styled.h1`
+const Title = styled.h1`
   text-align: center;
   font-size: 4rem;
   margin: 0.5rem;
 `;
 
-const Emoji = ({ label, children }) => (
-  <span role="img" aria-label={label}>
+const PageTitle = () => (
+  <Title>
+    <Emoji label="app title">⏳&nbsp;🍎&nbsp;⏰</Emoji>
+  </Title>
+);
+
+const TitleDivider = styled.hr`
+  background-color: slateblue;
+  border: none;
+  border-radius: 0.1rem;
+  width: 100%;
+  height: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  flex-direction: ${({ col }) => (col ? 'column' : 'row')};
+  align-items: ${({ alignItems }) => alignItems};
+  justify-content: ${({ justifyContent }) =>
+    justifyContent};
+`;
+
+let Button = ({ children, ...props }) => (
+  <div {...props}>{children}</div>
+);
+
+Button = styled(Button)`
+  background-color: white;
+  border: none;
+`;
+
+let Emoji = ({ label, children, ...props }) => (
+  <span {...props} role="img" aria-label={label}>
     {children}
   </span>
 );
 
-const Button = styled.button`
-  background: white;
-  color: green;
-  border: 0.2rem solid slateblue;
-  border-radius: 3px;
+Emoji = styled(Emoji)`
+  cursor: default;
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
 `;
 
 let DigitalClock = ({ minutes, seconds, className }) => (
@@ -44,23 +76,50 @@ let DigitalClock = ({ minutes, seconds, className }) => (
 
 DigitalClock = styled(DigitalClock)`
   font-size: 4rem;
-  font-family: Orbitron;
-  line-height: 1.6;
+  font-family: Orbitron, Arial, sans-serif;
+  line-height: 1.25;
 `;
 
 const TimeAmountDisplay = styled.p`
   font-family: Arial;
   font-weight: bold;
-  font-size: large;
+  font-size: 1.4rem;
   margin: 0;
+  margin-left: 0.5rem;
 `;
+
+const TimeAmount = styled.span`
+  font-family: Arial;
+  font-weight: bold;
+  font-size: 3.4rem;
+`;
+
+const UpDown = ({ onUp, onDown }) => (
+  <Flex col>
+    <Button onClick={onUp}>
+      <CaretSquareUp
+        size="20"
+        title="increase break minutes"
+      />
+    </Button>
+    <Button onClick={onDown}>
+      <CaretSquareDown
+        size="20"
+        title="decrease break minutes"
+      />
+    </Button>
+  </Flex>
+);
 
 export {
   GlobalStyle,
-  Box,
+  TitleDivider,
   PageTitle,
   Emoji,
   Button,
+  UpDown,
   DigitalClock,
   TimeAmountDisplay,
+  TimeAmount,
+  Flex,
 };
