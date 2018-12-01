@@ -6,19 +6,25 @@ import styled, {
 import { CaretSquareUp } from 'styled-icons/fa-regular/CaretSquareUp';
 import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Orbitron');
 `;
 
 /* eslint-disable jsx-a11y/accessible-emoji */
 /* disabling because rule is followed in the Emoji component */
 
-const Flex = styled.div`
+export const Flex = styled.div`
   display: flex;
   flex-direction: ${({ col }) => (col ? 'column' : 'row')};
   align-items: ${({ alignItems }) => alignItems};
   justify-content: ${({ justifyContent }) =>
     justifyContent};
+`;
+
+export const Box = styled.div`
+  border: 0.3rem solid palevioletred;
+  border-radius: 0.1rem;
+  padding: 0.5rem;
 `;
 
 const Title = styled.h1`
@@ -27,13 +33,13 @@ const Title = styled.h1`
   margin: 0.5rem;
 `;
 
-const PageTitle = () => (
+export const PageTitle = () => (
   <Title>
     <Emoji label="app title">⏳&nbsp;🍎&nbsp;⏰</Emoji>
   </Title>
 );
 
-const HeaderDivider = styled.hr`
+export const HeaderDivider = styled.hr`
   background-color: slateblue;
   border: none;
   border-radius: 0.1rem;
@@ -48,14 +54,14 @@ const DigitalClock = styled.time`
   line-height: 1.25;
 `;
 
-const TimeRemaining = ({ minutes, seconds }) => (
+export const TimeRemaining = ({ minutes, seconds }) => (
   <DigitalClock dateTime={`PT${minutes}M${seconds}S`}>
     {String(minutes).padStart(2, '0')}:
     {String(seconds).padStart(2, '0')}
   </DigitalClock>
 );
 
-const TimeAmountDisplay = styled.p`
+export const TimeAmountDisplay = styled.p`
   font-family: Arial;
   font-weight: bold;
   font-size: 1.4rem;
@@ -63,13 +69,18 @@ const TimeAmountDisplay = styled.p`
   margin-left: 0.5rem;
 `;
 
-const TimeAmount = styled.span`
+export const TimeAmount = styled.span`
   font-family: Arial;
   font-weight: bold;
   font-size: 3.4rem;
 `;
 
-const UpDown = ({ onUp, onDown, upTitle, downTitle }) => (
+export const UpDown = ({
+  onUp,
+  onDown,
+  upTitle,
+  downTitle,
+}) => (
   <Flex col>
     <Button onClick={onUp}>
       <CaretSquareUp size="20" title={upTitle} />
@@ -102,15 +113,4 @@ Emoji = styled(Emoji)`
   -ms-user-select: none; /* IE10+ */
 `;
 
-export {
-  GlobalStyle,
-  HeaderDivider,
-  PageTitle,
-  Emoji,
-  Button,
-  UpDown,
-  TimeRemaining,
-  TimeAmountDisplay,
-  TimeAmount,
-  Flex,
-};
+export { Emoji, Button };
