@@ -14,9 +14,10 @@ import config from './config/';
  * Finally, [(INC),(DEC)]_[(WORK),(BREAK)]_MINS events can be sent to change the timer settings.
  */
 
-const machine = Machine(config, {
-  actions: actions,
-  guards: guards,
-});
+export const machineBuilder = () =>
+  Machine(config, {
+    actions,
+    guards,
+  });
 
-export default machine;
+export const machineBuilderDeps = [config, actions, guards];

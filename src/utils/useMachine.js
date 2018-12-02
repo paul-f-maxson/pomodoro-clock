@@ -1,7 +1,15 @@
 import { useState, useMemo, useEffect } from 'react';
 import { interpret } from 'xstate/lib/interpreter';
 
-export default function useMachine(machine) {
+export default function useMachine(
+  machineBuilder,
+  machineBuilderDeps
+) {
+  const machine = useMemo(
+    machineBuilder,
+    machineBuilderDeps
+  );
+
   const [state, setState] = useState(machine.initialState);
   const [context, setContext] = useState(machine.context);
 

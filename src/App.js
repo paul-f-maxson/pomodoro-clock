@@ -1,13 +1,19 @@
 import React, { useEffect, createContext } from 'react';
 import Presentational from './Presentational';
 
-import clockMachine from './PomodoroClockMachine';
+import {
+  machineBuilder as clockMachineBuilder,
+  machineBuilderDeps as clockMachineBuilderDeps,
+} from './PomodoroClockMachine';
 import { useMachine } from './utils';
 
 const ClockMachineContext = createContext();
 
 export default () => {
-  const machine = useMachine(clockMachine);
+  const machine = useMachine(
+    clockMachineBuilder,
+    clockMachineBuilderDeps
+  );
   const { send } = machine;
 
   // Set interval to send TICK event every second
