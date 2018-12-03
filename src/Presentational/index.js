@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React from 'react';
 import {
   BaseCSS,
   Container,
@@ -19,21 +19,6 @@ import {
   Flex,
 } from './Components';
 
-import { ClockMachineContext } from '../App';
-
-const clockControlEvents = [
-  'RUN',
-  'RESET',
-  'PAUSE',
-  'RESUME',
-  'CONTINUE',
-  'SNOOZE',
-  'INC_WORK_MINS',
-  'DEC_WORK_MINS',
-  'INC_BREAK_MINS',
-  'DEC_BREAK_MINS',
-];
-
 const clockControlsConfig = {
   RUN: { emoji: '🎬', label: 'run clock' },
   RESET: { emoji: '🔄‍', label: 'reset clock' },
@@ -43,21 +28,7 @@ const clockControlsConfig = {
   SNOOZE: { emoji: '🛌', label: 'snooze alarm' },
 };
 
-export default () => {
-  const machine = useContext(ClockMachineContext);
-  const { state, context, send } = machine;
-
-  const senders = useMemo(
-    () => {
-      let senders = {};
-      clockControlEvents.forEach(eventName => {
-        senders[eventName] = () => send(eventName);
-      });
-      return senders;
-    },
-    [clockControlEvents, send]
-  );
-
+export default ({ state, context, senders }) => {
   const clockControls = state.nextEvents.map(eventName => {
     const sender = senders[eventName];
     const eventEmoji = clockControlsConfig[eventName];
