@@ -6,6 +6,9 @@ import styled, {
 import { CaretSquareUp } from 'styled-icons/fa-regular/CaretSquareUp';
 import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
 
+/* disableing because rule followed by Emoji component */
+/* eslint-disable jsx-a11y/accessible-emoji */
+
 export const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Orbitron');
 `;
@@ -18,7 +21,7 @@ export const Flex = styled.div`
     justifyContent};
 
   ${
-    '' /* Set the passed value as the padding at the ends of the major axis and as the margin on children in the same direction*/
+    '' /* Set the passed value as the padding at the ends of the major axis and as the margin on children in the same direction. */
   }
   padding: ${({ remBetweenKids, row }) => {
     const remBtw = `${remBetweenKids}rem`;
@@ -47,6 +50,20 @@ export const PageTitle = () => (
   <Title>
     <Emoji label="app title">⏳&nbsp;🍎&nbsp;⏰</Emoji>
   </Title>
+);
+
+const TimesUpBox = styled.div`
+  padding: 0.3rem;
+  height: 2rem;
+  width: 2rem;
+  border: 0.1rem solid slategrey;
+  border-radius: 0.1rem;
+`;
+
+export const TimesUp = () => (
+  <TimesUpBox>
+    <EmojiWrapper label="alarm">⌛</EmojiWrapper>
+  </TimesUpBox>
 );
 
 export const HeaderDivider = styled.hr`

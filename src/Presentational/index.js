@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, Fragment } from 'react';
 import {
   BaseCSS,
   Container,
@@ -16,6 +16,7 @@ import {
   TimeRemaining,
   EmojiWrapper,
   TimeAmountDisplay,
+  TimesUp,
   Flex,
 } from './Components';
 
@@ -29,20 +30,25 @@ const clockControlsConfig = {
 };
 
 export default ({ state, context, senders }) => {
-  const clockControls = state.nextEvents.map(eventName => {
-    const sender = senders[eventName];
-    const eventEmoji = clockControlsConfig[eventName];
+  // entries the config, map it to make a [key, component] array, Map that back into an object
+  const clockControls = useMemo(() =>
+    Object.entries(clockControlsConfig).map(
+      ([eventName, data]) => {
+        const sender = senders[eventName];
 
-    return eventEmoji !== undefined ? (
-      <div key={eventEmoji.label}>
-        <Button onClick={sender}>
-          <EmojiWrapper label={eventEmoji.label}>
-            {eventEmoji.emoji}
-          </EmojiWrapper>
-        </Button>
-      </div>
-    ) : null;
-  });
+        const { emoji, label } = data;
+        return (
+          <Fragment key={label}>
+            <Button onClick={sender}>
+              <EmojiWrapper label={label}>
+                {emoji}
+              </EmojiWrapper>
+            </Button>
+          </Fragment>
+        );
+      }
+    )
+  );
 
   return (
     <>
@@ -65,10 +71,18 @@ export default ({ state, context, senders }) => {
           <Row>
             <Col col={11} sm={6}>
               <Flex col>
-                <TimeRemaining
-                  minutes={context.time.getMinutes()}
-                  seconds={context.time.getSeconds()}
-                />
+                <Flex
+                  row
+                  justifyContent="space-evenly"
+                  alignItems="center"
+                >
+                  <TimeRemaining
+                    minutes={context.time.getMinutes()}
+                    seconds={context.time.getSeconds()}
+                  />
+
+                  {context.ringing ? <TimesUp /> : null}
+                </Flex>
                 <ClockControlsBox>
                   <Flex row>{clockControls}</Flex>
                 </ClockControlsBox>
@@ -116,13 +130,6 @@ export default ({ state, context, senders }) => {
             </Col>
           </Row>
         </main>
-
-        {context.ringing ? (
-          <span role="img" aria-label="alarm">
-            ⌛
-          </span>
-        ) : null}
-        <br />
       </Container>
     </>
   );

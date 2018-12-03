@@ -5,7 +5,7 @@ import {
   machineBuilder as clockMachineBuilder,
   machineBuilderDeps as clockMachineBuilderDeps,
 } from './PomodoroClockMachine';
-import { useMachine } from './utils';
+import useMachine from './UseMachine';
 
 const clockControlEvents = [
   'RUN',

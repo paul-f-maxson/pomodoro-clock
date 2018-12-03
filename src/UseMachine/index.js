@@ -1,10 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { interpret } from 'xstate/lib/interpreter';
 
-export default function useMachine(
-  machineBuilder,
-  machineBuilderDeps
-) {
+export default (machineBuilder, machineBuilderDeps) => {
   const machine = useMemo(
     machineBuilder,
     machineBuilderDeps
@@ -28,4 +25,4 @@ export default function useMachine(
   }, []);
 
   return { state, context, service, send: service.send };
-}
+};
