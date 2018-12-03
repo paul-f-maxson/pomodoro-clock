@@ -1,6 +1,6 @@
 const runningState = {
   id: 'Running',
-  on: {},
+  on: { PAUSE: 'Paused', RESET: 'Set' },
   initial: 'Working',
   states: {
     hist: { type: 'history' },

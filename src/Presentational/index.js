@@ -9,20 +9,19 @@ import {
 import {
   GlobalStyle,
   HeaderDivider,
-  Box,
+  ClockControlsBox,
   PageTitle,
   Button,
   UpDown,
   TimeRemaining,
-  Emoji,
+  EmojiWrapper,
   TimeAmountDisplay,
-  TimeAmount,
   Flex,
 } from './Components';
 
 import { ClockMachineContext } from '../App';
 
-const possibleEvents = [
+const clockControlEvents = [
   'RUN',
   'RESET',
   'PAUSE',
@@ -35,17 +34,13 @@ const possibleEvents = [
   'DEC_BREAK_MINS',
 ];
 
-const eventEmojis = {
+const clockControlsConfig = {
   RUN: { emoji: '🎬', label: 'run clock' },
   RESET: { emoji: '🔄‍', label: 'reset clock' },
   PAUSE: { emoji: '🧘‍', label: 'pause clock' },
   RESUME: { emoji: '🏃', label: 'resume clock' },
   CONTINUE: { emoji: '⏭️', label: 'advance clock' },
   SNOOZE: { emoji: '🛌', label: 'snooze alarm' },
-  INC_WORK_MINS: undefined,
-  DEC_WORK_MINS: undefined,
-  INC_BREAK_MINS: undefined,
-  DEC_BREAK_MINS: undefined,
 };
 
 export default () => {
@@ -55,39 +50,31 @@ export default () => {
   const senders = useMemo(
     () => {
       let senders = {};
-      possibleEvents.forEach(eventName => {
+      clockControlEvents.forEach(eventName => {
         senders[eventName] = () => send(eventName);
       });
       return senders;
     },
-    [possibleEvents, send]
+    [clockControlEvents, send]
   );
 
-  const nme = 'RUN';
-  console.log(eventEmojis[nme]);
-  console.log(senders);
+  const clockControls = state.nextEvents.map(eventName => {
+    const sender = senders[eventName];
+    const eventEmoji = clockControlsConfig[eventName];
 
-  const availableButtons = state.nextEvents.map(
-    eventName => {
-      const sender = senders[eventName];
-      const eventEmoji = eventEmojis[eventName];
-
-      return eventEmoji !== undefined ? (
-        <div key={eventEmoji.label}>
-          <Button onClick={sender}>
-            <Emoji label={eventEmoji.label}>
-              {eventEmoji.emoji}
-            </Emoji>
-          </Button>
-        </div>
-      ) : null;
-    }
-  );
+    return eventEmoji !== undefined ? (
+      <div key={eventEmoji.label}>
+        <Button onClick={sender}>
+          <EmojiWrapper label={eventEmoji.label}>
+            {eventEmoji.emoji}
+          </EmojiWrapper>
+        </Button>
+      </div>
+    ) : null;
+  });
 
   return (
     <>
-      {/* eslint-disable jsx-a11y/accessible-emoji */}
-      {/* disabling because rule is followed in the Emoji component */}
       <GlobalStyle />
       <BaseCSS />
       <Container>
@@ -105,11 +92,16 @@ export default () => {
 
         <main>
           <Row>
-            <Col auto>
-              <TimeRemaining
-                minutes={context.time.getMinutes()}
-                seconds={context.time.getSeconds()}
-              />
+            <Col col={11} sm={6}>
+              <Flex col>
+                <TimeRemaining
+                  minutes={context.time.getMinutes()}
+                  seconds={context.time.getSeconds()}
+                />
+                <ClockControlsBox>
+                  <Flex row>{clockControls}</Flex>
+                </ClockControlsBox>
+              </Flex>
             </Col>
             <Col auto>
               <Row alignItems="center">
@@ -123,14 +115,10 @@ export default () => {
                       downTitle="decrease work minutes"
                     />
 
-                    <TimeAmountDisplay>
-                      <TimeAmount>
-                        {String(
-                          context.workMinutes
-                        ).padStart(2, '0')}
-                      </TimeAmount>{' '}
-                      minutes&nbsp;working
-                    </TimeAmountDisplay>
+                    <TimeAmountDisplay
+                      timeAmount={context.workMinutes}
+                      labelText="minutes working"
+                    />
                     {/*  */}
                   </Flex>
                 </Col>
@@ -146,27 +134,14 @@ export default () => {
                       downTitle="decrease break minutes"
                     />
 
-                    <TimeAmountDisplay>
-                      <TimeAmount>
-                        {String(
-                          context.breakMinutes
-                        ).padStart(2, '0')}
-                      </TimeAmount>{' '}
-                      minute&nbsp;break
-                    </TimeAmountDisplay>
+                    <TimeAmountDisplay
+                      timeAmount={context.breakMinutes}
+                      labelText="minute break"
+                    />
                     {/*  */}
                   </Flex>
                 </Col>
               </Row>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col auto>
-              {/* Clock controls */}
-              <Box>
-                <Flex>{availableButtons}</Flex>
-              </Box>
             </Col>
           </Row>
         </main>

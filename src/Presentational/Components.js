@@ -10,21 +10,31 @@ export const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Orbitron');
 `;
 
-/* eslint-disable jsx-a11y/accessible-emoji */
-/* disabling because rule is followed in the Emoji component */
-
 export const Flex = styled.div`
   display: flex;
   flex-direction: ${({ col }) => (col ? 'column' : 'row')};
   align-items: ${({ alignItems }) => alignItems};
   justify-content: ${({ justifyContent }) =>
     justifyContent};
-`;
 
-export const Box = styled.div`
-  border: 0.3rem solid palevioletred;
-  border-radius: 0.1rem;
-  padding: 0.5rem;
+  ${
+    '' /* Set the passed value as the padding at the ends of the major axis and as the margin on children in the same direction*/
+  }
+  padding: ${({ remBetweenKids, row }) => {
+    const remBtw = `${remBetweenKids}rem`;
+    return row
+      ? `0 ${remBtw} 0 ${remBtw}`
+      : `${remBtw} 0 ${remBtw} 0`;
+  }};
+
+  > * {
+    margin: ${({ remBetweenKids, row }) => {
+      const remBtw = `${remBetweenKids}rem`;
+      return row
+        ? `0 ${remBtw} 0 ${remBtw}`
+        : `${remBtw} 0 ${remBtw} 0`;
+    }};
+  }
 `;
 
 const Title = styled.h1`
@@ -61,19 +71,62 @@ export const TimeRemaining = ({ minutes, seconds }) => (
   </DigitalClock>
 );
 
-export const TimeAmountDisplay = styled.p`
+export const ClockControlsBox = styled.div`
+  border: 0.1rem solid darkgray;
+  border-radius: 0.1rem;
+  padding: 1rem;
+`;
+
+const VerticalWords = ({ text, ...restProps }) => {
+  const words = String(text)
+    .split(' ')
+    .map((word, i) => (
+      <span key={`${i}-${word}`}>{word}</span>
+    ));
+
+  return <Flex col>{words}</Flex>;
+};
+
+const TimeAmountLabel = styled.div`
   font-family: Arial;
   font-weight: bold;
   font-size: 1.4rem;
-  margin: 0;
-  margin-left: 0.5rem;
 `;
 
-export const TimeAmount = styled.span`
+const TimeAmountSpan = styled.span`
   font-family: Arial;
   font-weight: bold;
   font-size: 3.4rem;
 `;
+
+export const TimeAmountDisplay = ({
+  timeAmount,
+  labelText,
+}) => (
+  <Flex remBetweenKids={0.2} row>
+    <TimeAmountSpan>
+      {String(timeAmount).padStart(2, '0')}
+    </TimeAmountSpan>
+
+    <TimeAmountLabel>
+      <VerticalWords text={labelText} />
+    </TimeAmountLabel>
+  </Flex>
+);
+
+const ThickBox = styled.div`
+  border: 0.2rem solid palevioletred;
+  padding: 0.3rem;
+  margin: 0.1rem;
+  border-radius: 0.3rem;
+`;
+
+export const Button = ({ children, noBox, ...restProps }) =>
+  noBox ? (
+    <div {...restProps}>{children}</div>
+  ) : (
+    <ThickBox {...restProps}>{children}</ThickBox>
+  );
 
 export const UpDown = ({
   onUp,
@@ -82,35 +135,24 @@ export const UpDown = ({
   downTitle,
 }) => (
   <Flex col>
-    <Button onClick={onUp}>
+    <Button noBox onClick={onUp}>
       <CaretSquareUp size="20" title={upTitle} />
     </Button>
-    <Button onClick={onDown}>
+    <Button noBox onClick={onDown}>
       <CaretSquareDown size="20" title={downTitle} />
     </Button>
   </Flex>
 );
 
-let Button = ({ children, ...props }) => (
-  <div {...props}>{children}</div>
-);
-
-Button = styled(Button)`
-  background-color: white;
-  border: none;
-`;
-
-let Emoji = ({ label, children, ...props }) => (
-  <span {...props} role="img" aria-label={label}>
-    {children}
-  </span>
-);
-
-Emoji = styled(Emoji)`
+const Emoji = styled.span`
   cursor: default;
   -webkit-user-select: none; /* Chrome/Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+ */
 `;
 
-export { Emoji, Button };
+export const EmojiWrapper = ({ label, children }) => (
+  <Emoji role="img" aria-label={label}>
+    {children}
+  </Emoji>
+);
