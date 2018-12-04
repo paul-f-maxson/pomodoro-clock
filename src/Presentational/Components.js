@@ -6,7 +6,9 @@ import styled, {
 import { CaretSquareUp } from 'styled-icons/fa-regular/CaretSquareUp';
 import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
 
-/* disableing because rule followed by Emoji component */
+// TODO: Organize these components somehow, as it is very hard to find just the one you're looking for
+
+/* disabling because rule is followed by EmojiWrapper component */
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 export const GlobalStyle = createGlobalStyle`

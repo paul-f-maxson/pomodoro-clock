@@ -15,6 +15,7 @@ export default () => {
   );
   const { state, context, send } = machine;
 
+  // TODO: Implement the ticker inside the machine
   // Set interval to send TICK event every second
   useEffect(
     () => {

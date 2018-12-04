@@ -66,6 +66,7 @@ export default ({
     ]
   );
 
+  // NOTE: I didn't really like the bootstrap grid system I used here, maybe use a different one.
   return (
     <>
       <GlobalStyle />
@@ -87,6 +88,7 @@ export default ({
           <Row>
             <Col col={11} sm={6}>
               <Flex col>
+                {/* TODO: a more semantically beautiful way of placing the TimesUp icon where I want it */}
                 <Flex
                   row
                   justifyContent="space-evenly"
