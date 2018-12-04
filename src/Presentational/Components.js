@@ -6,6 +6,8 @@ import styled, {
 import { CaretSquareUp } from 'styled-icons/fa-regular/CaretSquareUp';
 import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
 
+// TODO: Individual components should useContext on their own, without it being passed down by the parent
+
 // TODO: Organize these components somehow, as it is very hard to find just the one you're looking for
 
 /* disabling because rule is followed by EmojiWrapper component */
