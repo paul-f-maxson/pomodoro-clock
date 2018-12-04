@@ -116,12 +116,18 @@ const DigitalClock = styled.time`
   line-height: 1.25;
 `;
 
-export const TimeRemaining = ({ minutes, seconds }) => (
-  <DigitalClock dateTime={`PT${minutes}M${seconds}S`}>
-    {String(minutes).padStart(2, '0')}:
-    {String(seconds).padStart(2, '0')}
-  </DigitalClock>
-);
+export const TimeRemaining = () => {
+  const { context } = useContext(ClockMachineContext);
+  const { time } = context;
+  const minutes = time.getMinutes();
+  const seconds = time.getSeconds();
+  return (
+    <DigitalClock dateTime={`PT${minutes}M${seconds}S`}>
+      {String(minutes).padStart(2, '0')}:
+      {String(seconds).padStart(2, '0')}
+    </DigitalClock>
+  );
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLOCK CONTROLS

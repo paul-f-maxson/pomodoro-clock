@@ -17,12 +17,7 @@ import {
   Flex,
 } from './Components';
 
-import { ClockMachineContext, SendersContext } from '../';
-
-export default ({ possibleClockEvents }) => {
-  const { context } = useContext(ClockMachineContext);
-  const senders = useContext(SendersContext);
-
+export default () => {
   // NOTE: I didn't really like the bootstrap grid system I used here, maybe use a different one.
   return (
     <>
@@ -32,9 +27,7 @@ export default ({ possibleClockEvents }) => {
         <header>
           <Row>
             <Col auto>
-              {/*  */}
               <PageTitle />
-              {/*  */}
             </Col>
           </Row>
         </header>
@@ -45,20 +38,8 @@ export default ({ possibleClockEvents }) => {
           <Row>
             <Col col={11} sm={6}>
               <Flex col>
-                <Flex
-                  row
-                  justifyContent="space-evenly"
-                  alignItems="center"
-                >
-                  <TimeRemaining
-                    minutes={context.time.getMinutes()}
-                    seconds={context.time.getSeconds()}
-                  />
-                </Flex>
-                <ClockControls
-                  senders={senders}
-                  possibleClockEvents={possibleClockEvents}
-                />
+                <TimeRemaining />
+                <ClockControls />
               </Flex>
             </Col>
             <Col auto>
