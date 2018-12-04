@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+export const ClockMachineContext = createContext();
+export const SendersContext = createContext();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

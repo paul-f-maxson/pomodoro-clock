@@ -1,4 +1,8 @@
-import React from 'react';
+import React, {
+  Fragment,
+  useMemo,
+  useContext,
+} from 'react';
 import styled, {
   createGlobalStyle,
 } from 'styled-components';
@@ -6,9 +10,11 @@ import styled, {
 import { CaretSquareUp } from 'styled-icons/fa-regular/CaretSquareUp';
 import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
 
-// TODO: Individual components should useContext on their own, without it being passed down by the parent
+import { eventNames as possibleClockEvents } from '../PomodoroClockMachine';
 
-// TODO: Organize these components somehow, as it is very hard to find just the one you're looking for
+import { ClockMachineContext, SendersContext } from '../';
+
+// TODO: Individual components should useContext on their own, without it being passed down by the parent
 
 /* disabling because rule is followed by EmojiWrapper component */
 /* eslint-disable jsx-a11y/accessible-emoji */
@@ -124,32 +130,127 @@ export const TimeRemaining = ({ minutes, seconds }) => (
 ////////////////////////////////////////////////////////////////////////////////
 // CLOCK CONTROLS
 
-export const ClockControlsBox = styled.div`
+const ClockControlsBox = styled.div`
   border: 0.1rem solid darkgray;
   border-radius: 0.1rem;
   padding: 1rem;
 `;
 
+const clockControlsConfig = {
+  RUN: { emoji: '🎬', label: 'run clock' },
+  RESET: { emoji: '🔄‍', label: 'reset clock' },
+  PAUSE: { emoji: '🧘‍', label: 'pause clock' },
+  RESUME: { emoji: '🏃', label: 'resume clock' },
+  CONTINUE: { emoji: '⏭️', label: 'advance clock' },
+  SNOOZE: { emoji: '🛌', label: 'snooze alarm' },
+};
+
+export const ClockControls = ({
+  senders,
+  possibleClockEvents,
+}) => {
+  const { state } = useContext(ClockMachineContext);
+
+  // Produce an object of { eventName: Fragment, } shape containing a button for each clock control
+  const clockControls = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(clockControlsConfig).map(
+          ([eventName, data]) => {
+            const sender = senders[eventName];
+
+            const { emoji, label } = data;
+            return [
+              eventName,
+              <Fragment key={label}>
+                <Button onClick={sender}>
+                  <EmojiWrapper label={label}>
+                    {emoji}
+                  </EmojiWrapper>
+                </Button>
+              </Fragment>,
+            ];
+          }
+        )
+      ),
+    [
+      clockControlsConfig,
+      senders,
+      Fragment,
+      Button,
+      EmojiWrapper,
+    ]
+  );
+
+  return (
+    <ClockControlsBox>
+      <Flex row>
+        {/* TODO: I would really like this to only render eg, the reset control if nextEvents includes RESET, but to implement it using this logic would be a nightmare */}
+        {/* TODO: I would also like to just automatically render the buttons for all of the available events, but I want to preserve the order of the buttons and I want to semantically show that e.g. RUN and RESET use the same physical space */}
+        {state.nextEvents.includes(possibleClockEvents.RUN)
+          ? clockControls.RUN
+          : clockControls.RESET}
+        {state.nextEvents.includes(
+          possibleClockEvents.PAUSE
+        )
+          ? clockControls.PAUSE
+          : clockControls.RESUME}
+        {state.nextEvents.includes(
+          possibleClockEvents.CONTINUE
+        )
+          ? clockControls.CONTINUE
+          : null}
+        {state.nextEvents.includes(
+          possibleClockEvents.SNOOZE
+        )
+          ? clockControls.SNOOZE
+          : null}
+      </Flex>
+    </ClockControlsBox>
+  );
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // TIME AMOUNTS CONTROLS
 
-export const UpDown = ({
-  onUp,
-  onDown,
+const makeUpDown = (
+  sendersKeyUp,
+  sendersKeyDown,
   upTitle,
-  downTitle,
-}) => (
-  <Flex col>
-    <Button noBox onClick={onUp}>
-      <CaretSquareUp size="20" title={upTitle} />
-    </Button>
-    <Button noBox onClick={onDown}>
-      <CaretSquareDown size="20" title={downTitle} />
-    </Button>
-  </Flex>
+  downTitle
+) => () => {
+  const senders = useContext(SendersContext);
+  const onUp = senders[sendersKeyUp];
+  const onDown = senders[sendersKeyDown];
+
+  return (
+    <Flex col>
+      <Button noBox onClick={onUp}>
+        <CaretSquareUp size="20" title={upTitle} />
+      </Button>
+      <Button noBox onClick={onDown}>
+        <CaretSquareDown size="20" title={downTitle} />
+      </Button>
+    </Flex>
+  );
+};
+
+const WorkMinutesUpDown = makeUpDown(
+  possibleClockEvents.INC_WORK_MINS,
+  possibleClockEvents.DEC_WORK_MINS,
+  'increase work minutes',
+  'decrease work minutes'
+);
+const BreakMinutesUpDown = makeUpDown(
+  possibleClockEvents.INC_BREAK_MINS,
+  possibleClockEvents.DEC_BREAK_MINS,
+  'increase break minutes',
+  'decrease break minutes'
 );
 
 ////////////////////////////////////////////////////////////////////////////////
+// TIME AMOUNTS
+
 // TIME AMOUNTS
 
 const TimeAmountSpan = styled.span`
@@ -158,32 +259,28 @@ const TimeAmountSpan = styled.span`
   font-size: 3.4rem;
 `;
 
-export const TimeAmountDisplay = ({
-  timeAmount,
-  labelText,
-}) => (
-  <Flex remBetweenKids={0.2} row>
+const makeTimeAmount = machineContextKey => () => {
+  const { context } = useContext(ClockMachineContext);
+  return (
     <TimeAmountSpan>
-      {String(timeAmount).padStart(2, '0')}
+      {String(context[machineContextKey]).padStart(2, '0')}
     </TimeAmountSpan>
+  );
+};
 
-    <TimeAmountLabel>
-      <VerticalWords text={labelText} />
-    </TimeAmountLabel>
-  </Flex>
-);
+const WorkMinutesAmount = makeTimeAmount('workMinutes');
+const BreakMinutesAmount = makeTimeAmount('breakMinutes');
 
-////////////////////////////////////////////////////////////////////////////////
 // TIME AMOUNTS LABELS
 
-const VerticalWords = ({ text, ...restProps }) => {
+const makeVerticalWords = text => {
   const words = String(text)
     .split(' ')
     .map((word, i) => (
       <span key={`${i}-${word}`}>{word}</span>
     ));
 
-  return <Flex col>{words}</Flex>;
+  return () => <Flex col>{words}</Flex>;
 };
 
 const TimeAmountLabel = styled.div`
@@ -191,3 +288,46 @@ const TimeAmountLabel = styled.div`
   font-weight: bold;
   font-size: 1.4rem;
 `;
+
+const makeTimeAmountLabel = text => {
+  const VerticalWords = makeVerticalWords(text);
+  return () => (
+    <TimeAmountLabel>
+      <VerticalWords />
+    </TimeAmountLabel>
+  );
+};
+
+const WorkMinutesLabel = makeTimeAmountLabel(
+  'minutes working'
+);
+const BreakMinutesLabel = makeTimeAmountLabel(
+  'minute break'
+);
+
+// TIME AMOUNTS DISPLAY
+
+const makeTimeAmountDisplay = (
+  UpDown,
+  TimeAmount,
+  TimeAmountLabel
+) => () => (
+  <Flex row alignItems="center">
+    <UpDown />
+    <Flex remBetweenKids={0.2} row>
+      <TimeAmount />
+      <TimeAmountLabel />
+    </Flex>
+  </Flex>
+);
+
+export const WorkMinutes = makeTimeAmountDisplay(
+  WorkMinutesUpDown,
+  WorkMinutesAmount,
+  WorkMinutesLabel
+);
+export const BreakMinutes = makeTimeAmountDisplay(
+  BreakMinutesUpDown,
+  BreakMinutesAmount,
+  BreakMinutesLabel
+);
