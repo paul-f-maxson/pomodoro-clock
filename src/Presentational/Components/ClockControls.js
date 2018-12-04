@@ -51,8 +51,6 @@ const makeClockControls = clockControlsConfig => {
     )
   );
 
-  console.log(clockControls);
-
   return () => {
     const { state } = useContext(ClockMachineContext);
 
