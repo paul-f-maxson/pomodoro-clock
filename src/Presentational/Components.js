@@ -1,8 +1,4 @@
-import React, {
-  Fragment,
-  useMemo,
-  useContext,
-} from 'react';
+import React, { Fragment, useContext } from 'react';
 import styled, {
   createGlobalStyle,
 } from 'styled-components';
@@ -145,70 +141,71 @@ const clockControlsConfig = {
   SNOOZE: { emoji: '🛌', label: 'snooze alarm' },
 };
 
-export const ClockControls = ({
-  senders,
-  possibleClockEvents,
-}) => {
-  const { state } = useContext(ClockMachineContext);
+const makeClockControls = clockControlsConfig => {
+  const clockControls = Object.fromEntries(
+    Object.entries(clockControlsConfig).map(
+      ([eventName, data]) => {
+        const { emoji, label } = data;
 
-  // Produce an object of { eventName: Fragment, } shape containing a button for each clock control
-  const clockControls = useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(clockControlsConfig).map(
-          ([eventName, data]) => {
-            const sender = senders[eventName];
+        const ClockControl = () => {
+          const senders = useContext(SendersContext);
+          const sender = senders[eventName];
 
-            const { emoji, label } = data;
-            return [
-              eventName,
-              <Fragment key={label}>
-                <Button onClick={sender}>
-                  <EmojiWrapper label={label}>
-                    {emoji}
-                  </EmojiWrapper>
-                </Button>
-              </Fragment>,
-            ];
-          }
-        )
-      ),
-    [
-      clockControlsConfig,
-      senders,
-      Fragment,
-      Button,
-      EmojiWrapper,
-    ]
+          return (
+            <Fragment key={label}>
+              <Button onClick={sender}>
+                <EmojiWrapper label={label}>
+                  {emoji}
+                </EmojiWrapper>
+              </Button>
+            </Fragment>
+          );
+        };
+
+        return [eventName, <ClockControl />];
+      }
+    )
   );
 
-  return (
-    <ClockControlsBox>
-      <Flex row>
-        {/* TODO: I would really like this to only render eg, the reset control if nextEvents includes RESET, but to implement it using this logic would be a nightmare */}
-        {/* TODO: I would also like to just automatically render the buttons for all of the available events, but I want to preserve the order of the buttons and I want to semantically show that e.g. RUN and RESET use the same physical space */}
-        {state.nextEvents.includes(possibleClockEvents.RUN)
-          ? clockControls.RUN
-          : clockControls.RESET}
-        {state.nextEvents.includes(
-          possibleClockEvents.PAUSE
-        )
-          ? clockControls.PAUSE
-          : clockControls.RESUME}
-        {state.nextEvents.includes(
-          possibleClockEvents.CONTINUE
-        )
-          ? clockControls.CONTINUE
-          : null}
-        {state.nextEvents.includes(
-          possibleClockEvents.SNOOZE
-        )
-          ? clockControls.SNOOZE
-          : null}
-      </Flex>
-    </ClockControlsBox>
-  );
+  console.log(clockControls);
+
+  return () => {
+    const { state } = useContext(ClockMachineContext);
+
+    return (
+      <ClockControlsBox>
+        <Flex row>
+          {/* TODO: I would really like this to only render eg, the reset control if nextEvents includes RESET, but to implement it using this logic would be a nightmare */}
+          {/* TODO: I would also like to just automatically render the buttons for all of the available events, but I want to preserve the order of the buttons and I want to semantically show that e.g. RUN and RESET use the same physical space */}
+          {state.nextEvents.includes(
+            possibleClockEvents.RUN
+          )
+            ? clockControls.RUN
+            : clockControls.RESET}
+          {state.nextEvents.includes(
+            possibleClockEvents.PAUSE
+          )
+            ? clockControls.PAUSE
+            : clockControls.RESUME}
+          {state.nextEvents.includes(
+            possibleClockEvents.CONTINUE
+          )
+            ? clockControls.CONTINUE
+            : null}
+          {state.nextEvents.includes(
+            possibleClockEvents.SNOOZE
+          )
+            ? clockControls.SNOOZE
+            : null}
+        </Flex>
+      </ClockControlsBox>
+    );
+  };
 };
+
+export const ClockControls = makeClockControls(
+  clockControlsConfig
+);
 
 ////////////////////////////////////////////////////////////////////////////////
 // TIME AMOUNTS CONTROLS
