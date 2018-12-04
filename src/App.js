@@ -4,21 +4,9 @@ import Presentational from './Presentational';
 import {
   machineBuilder as clockMachineBuilder,
   machineBuilderDeps as clockMachineBuilderDeps,
+  eventNames as possibleClockEvents,
 } from './PomodoroClockMachine';
 import useMachine from './UseMachine';
-
-const clockControlEvents = [
-  'RUN',
-  'RESET',
-  'PAUSE',
-  'RESUME',
-  'CONTINUE',
-  'SNOOZE',
-  'INC_WORK_MINS',
-  'DEC_WORK_MINS',
-  'INC_BREAK_MINS',
-  'DEC_BREAK_MINS',
-];
 
 export default () => {
   const machine = useMachine(
@@ -41,15 +29,18 @@ export default () => {
     [send]
   );
 
+  // Create methods to send all of the events possible on the clock machine
   const senders = useMemo(
-    () => {
-      let senders = {};
-      clockControlEvents.forEach(eventName => {
-        senders[eventName] = () => send(eventName);
-      });
-      return senders;
-    },
-    [clockControlEvents, send]
+    () =>
+      Object.fromEntries(
+        Object.entries(possibleClockEvents).map(
+          ([eventName, eventString]) => [
+            eventName,
+            () => send(eventString),
+          ]
+        )
+      ),
+    [possibleClockEvents, send]
   );
 
   return (
@@ -57,6 +48,7 @@ export default () => {
       state={state}
       context={context}
       senders={senders}
+      possibleClockEvents={possibleClockEvents}
     />
   );
 };

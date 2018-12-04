@@ -21,3 +21,17 @@ export const machineBuilder = () =>
   });
 
 export const machineBuilderDeps = [config, actions, guards];
+
+// Add any new events defined on the machine to this array
+export const eventNames = {
+  RUN: 'RUN',
+  RESET: 'RESET',
+  PAUSE: 'PAUSE',
+  RESUME: 'RESUME',
+  CONTINUE: 'CONTINUE',
+  SNOOZE: 'SNOOZE',
+  INC_WORK_MINS: 'INC_WORK_MINS',
+  DEC_WORK_MINS: 'DEC_WORK_MINS',
+  INC_BREAK_MINS: 'INC_BREAK_MINS',
+  DEC_BREAK_MINS: 'DEC_BREAK_MINS',
+};

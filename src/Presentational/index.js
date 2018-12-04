@@ -1,4 +1,4 @@
-import React, { useMemo, Fragment } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import {
   BaseCSS,
   Container,
@@ -29,25 +29,41 @@ const clockControlsConfig = {
   SNOOZE: { emoji: '🛌', label: 'snooze alarm' },
 };
 
-export default ({ state, context, senders }) => {
-  // entries the config, map it to make a [key, component] array, Map that back into an object
-  const clockControls = useMemo(() =>
-    Object.entries(clockControlsConfig).map(
-      ([eventName, data]) => {
-        const sender = senders[eventName];
+export default ({
+  state,
+  context,
+  senders,
+  possibleClockEvents,
+}) => {
+  // Produce an object of { eventName: Fragment, } shape containing a button for each clock control
+  const clockControls = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(clockControlsConfig).map(
+          ([eventName, data]) => {
+            const sender = senders[eventName];
 
-        const { emoji, label } = data;
-        return (
-          <Fragment key={label}>
-            <Button onClick={sender}>
-              <EmojiWrapper label={label}>
-                {emoji}
-              </EmojiWrapper>
-            </Button>
-          </Fragment>
-        );
-      }
-    )
+            const { emoji, label } = data;
+            return [
+              eventName,
+              <Fragment key={label}>
+                <Button onClick={sender}>
+                  <EmojiWrapper label={label}>
+                    {emoji}
+                  </EmojiWrapper>
+                </Button>
+              </Fragment>,
+            ];
+          }
+        )
+      ),
+    [
+      clockControlsConfig,
+      senders,
+      Fragment,
+      Button,
+      EmojiWrapper,
+    ]
   );
 
   return (
@@ -84,7 +100,30 @@ export default ({ state, context, senders }) => {
                   {context.ringing ? <TimesUp /> : null}
                 </Flex>
                 <ClockControlsBox>
-                  <Flex row>{clockControls}</Flex>
+                  <Flex row>
+                    {/* TODO: I would really like this to only render eg, the reset control if nextEvents includes RESET, but to implement it using this logic would be a nightmare */}
+                    {/* TODO: I would also like to just automatically render the buttons for all of the available events, but I want to preserve the order of the buttons and I want to semantically show that e.g. RUN and RESET use the same physical space */}
+                    {state.nextEvents.includes(
+                      possibleClockEvents.RUN
+                    )
+                      ? clockControls.RUN
+                      : clockControls.RESET}
+                    {state.nextEvents.includes(
+                      possibleClockEvents.PAUSE
+                    )
+                      ? clockControls.PAUSE
+                      : clockControls.RESUME}
+                    {state.nextEvents.includes(
+                      possibleClockEvents.CONTINUE
+                    )
+                      ? clockControls.CONTINUE
+                      : null}
+                    {state.nextEvents.includes(
+                      possibleClockEvents.SNOOZE
+                    )
+                      ? clockControls.SNOOZE
+                      : null}
+                  </Flex>
                 </ClockControlsBox>
               </Flex>
             </Col>
