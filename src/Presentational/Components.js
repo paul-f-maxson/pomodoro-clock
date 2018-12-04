@@ -54,20 +54,6 @@ export const PageTitle = () => (
   </Title>
 );
 
-const TimesUpBox = styled.div`
-  padding: 0.3rem;
-  height: 2rem;
-  width: 2rem;
-  border: 0.1rem solid slategrey;
-  border-radius: 0.1rem;
-`;
-
-export const TimesUp = () => (
-  <TimesUpBox>
-    <EmojiWrapper label="alarm">⌛</EmojiWrapper>
-  </TimesUpBox>
-);
-
 export const HeaderDivider = styled.hr`
   background-color: slateblue;
   border: none;

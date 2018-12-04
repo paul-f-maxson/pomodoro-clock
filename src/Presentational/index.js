@@ -16,7 +16,6 @@ import {
   TimeRemaining,
   EmojiWrapper,
   TimeAmountDisplay,
-  TimesUp,
   Flex,
 } from './Components';
 
@@ -88,7 +87,6 @@ export default ({
           <Row>
             <Col col={11} sm={6}>
               <Flex col>
-                {/* TODO: a more semantically beautiful way of placing the TimesUp icon where I want it */}
                 <Flex
                   row
                   justifyContent="space-evenly"
@@ -98,8 +96,6 @@ export default ({
                     minutes={context.time.getMinutes()}
                     seconds={context.time.getSeconds()}
                   />
-
-                  {context.ringing ? <TimesUp /> : null}
                 </Flex>
                 <ClockControlsBox>
                   <Flex row>
