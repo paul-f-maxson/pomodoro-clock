@@ -24,6 +24,7 @@ export const machineBuilderDeps = [config, actions, guards];
 
 // Add any new events defined on the machine to this array
 export const eventNames = {
+  TICK: 'TICK',
   RUN: 'RUN',
   RESET: 'RESET',
   PAUSE: 'PAUSE',

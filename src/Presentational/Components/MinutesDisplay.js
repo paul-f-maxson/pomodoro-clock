@@ -6,10 +6,9 @@ import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
 
 import { Flex, Button } from './Universal';
 
-import {
-  ClockMachineContext,
-  SendersContext,
-} from '../../';
+import { ClockMachineContext } from '../../';
+
+import { useService, useSenders } from '../../UseMachine';
 
 import { eventNames as possibleClockEvents } from '../../PomodoroClockMachine';
 
@@ -21,7 +20,10 @@ const makeUpDown = (
   upTitle,
   downTitle
 ) => () => {
-  const senders = useContext(SendersContext);
+  const machine = useContext(ClockMachineContext);
+  const { service } = useService(machine);
+  const { send } = service;
+  const senders = useSenders(send);
   const onUp = senders[sendersKeyUp];
   const onDown = senders[sendersKeyDown];
 

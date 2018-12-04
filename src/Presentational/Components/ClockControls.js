@@ -3,12 +3,11 @@ import styled from 'styled-components';
 
 import { Flex, Button, EmojiWrapper } from './Universal';
 
-import {
-  ClockMachineContext,
-  SendersContext,
-} from '../../';
-
 import { eventNames as possibleClockEvents } from '../../PomodoroClockMachine';
+
+import { ClockMachineContext } from '../../';
+
+import { useSenders, useService } from '../../UseMachine';
 
 const ClockControlsBox = styled.div`
   border: 0.1rem solid darkgray;
@@ -25,14 +24,17 @@ const clockControlsConfig = {
   SNOOZE: { emoji: '🛌', label: 'snooze alarm' },
 };
 
-const makeClockControls = clockControlsConfig => {
+export default (function(clockControlsConfig) {
   const clockControls = Object.fromEntries(
     Object.entries(clockControlsConfig).map(
       ([eventName, data]) => {
         const { emoji, label } = data;
 
         const ClockControl = () => {
-          const senders = useContext(SendersContext);
+          const machine = useContext(ClockMachineContext);
+          const { service } = useService(machine);
+          const { send } = service;
+          const senders = useSenders(send);
           const sender = senders[eventName];
 
           return (
@@ -52,8 +54,8 @@ const makeClockControls = clockControlsConfig => {
   );
 
   return () => {
-    const { state } = useContext(ClockMachineContext);
-
+    const machine = useContext(ClockMachineContext);
+    const { state } = useService(machine);
     return (
       <ClockControlsBox>
         <Flex row>
@@ -83,6 +85,4 @@ const makeClockControls = clockControlsConfig => {
       </ClockControlsBox>
     );
   };
-};
-
-export default makeClockControls(clockControlsConfig);
+})(clockControlsConfig);
