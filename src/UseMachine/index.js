@@ -11,13 +11,16 @@ export default (machineBuilder, machineBuilderDeps) => {
   const [context, setContext] = useState(machine.context);
 
   // Setup the service only once.
-  const service = useMemo(() => {
-    const service = interpret(machine);
-    service.init();
-    service.onTransition(state => setState(state));
-    service.onChange(setContext);
-    return service;
-  }, []);
+  const service = useMemo(
+    () => {
+      const service = interpret(machine);
+      service.init();
+      service.onTransition(newState => setState(newState));
+      service.onChange(setContext);
+      return service;
+    },
+    [setState, setContext]
+  );
 
   // Stop the service when unmounting.
   useEffect(() => {

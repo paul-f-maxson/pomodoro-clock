@@ -13,9 +13,15 @@ import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
 /* disabling because rule is followed by EmojiWrapper component */
 /* eslint-disable jsx-a11y/accessible-emoji */
 
+// UNIVERSALLY USED COMPONENTS
+
+// GLOBAL STYLE
+
 export const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Orbitron');
 `;
+
+// FLEX
 
 export const Flex = styled.div`
   display: flex;
@@ -44,6 +50,40 @@ export const Flex = styled.div`
   }
 `;
 
+// EMOJI
+
+const Emoji = styled.span`
+  cursor: default;
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
+`;
+
+export const EmojiWrapper = ({ label, children }) => (
+  <Emoji role="img" aria-label={label}>
+    {children}
+  </Emoji>
+);
+
+// BUTTON
+
+const ThickBox = styled.div`
+  border: 0.2rem solid palevioletred;
+  padding: 0.3rem;
+  margin: 0.1rem;
+  border-radius: 0.3rem;
+`;
+
+export const Button = ({ children, noBox, ...restProps }) =>
+  noBox ? (
+    <div {...restProps}>{children}</div>
+  ) : (
+    <ThickBox {...restProps}>{children}</ThickBox>
+  );
+
+////////////////////////////////////////////////////////////////////////////////
+// PAGE HEADING
+
 const Title = styled.h1`
   text-align: center;
   font-size: 4rem;
@@ -65,6 +105,9 @@ export const HeaderDivider = styled.hr`
   margin-bottom: 1rem;
 `;
 
+////////////////////////////////////////////////////////////////////////////////
+// CLOCK
+
 const DigitalClock = styled.time`
   font-size: 4rem;
   font-family: Orbitron, Arial, sans-serif;
@@ -78,27 +121,36 @@ export const TimeRemaining = ({ minutes, seconds }) => (
   </DigitalClock>
 );
 
+////////////////////////////////////////////////////////////////////////////////
+// CLOCK CONTROLS
+
 export const ClockControlsBox = styled.div`
   border: 0.1rem solid darkgray;
   border-radius: 0.1rem;
   padding: 1rem;
 `;
 
-const VerticalWords = ({ text, ...restProps }) => {
-  const words = String(text)
-    .split(' ')
-    .map((word, i) => (
-      <span key={`${i}-${word}`}>{word}</span>
-    ));
+////////////////////////////////////////////////////////////////////////////////
+// TIME AMOUNTS CONTROLS
 
-  return <Flex col>{words}</Flex>;
-};
+export const UpDown = ({
+  onUp,
+  onDown,
+  upTitle,
+  downTitle,
+}) => (
+  <Flex col>
+    <Button noBox onClick={onUp}>
+      <CaretSquareUp size="20" title={upTitle} />
+    </Button>
+    <Button noBox onClick={onDown}>
+      <CaretSquareDown size="20" title={downTitle} />
+    </Button>
+  </Flex>
+);
 
-const TimeAmountLabel = styled.div`
-  font-family: Arial;
-  font-weight: bold;
-  font-size: 1.4rem;
-`;
+////////////////////////////////////////////////////////////////////////////////
+// TIME AMOUNTS
 
 const TimeAmountSpan = styled.span`
   font-family: Arial;
@@ -121,45 +173,21 @@ export const TimeAmountDisplay = ({
   </Flex>
 );
 
-const ThickBox = styled.div`
-  border: 0.2rem solid palevioletred;
-  padding: 0.3rem;
-  margin: 0.1rem;
-  border-radius: 0.3rem;
+////////////////////////////////////////////////////////////////////////////////
+// TIME AMOUNTS LABELS
+
+const VerticalWords = ({ text, ...restProps }) => {
+  const words = String(text)
+    .split(' ')
+    .map((word, i) => (
+      <span key={`${i}-${word}`}>{word}</span>
+    ));
+
+  return <Flex col>{words}</Flex>;
+};
+
+const TimeAmountLabel = styled.div`
+  font-family: Arial;
+  font-weight: bold;
+  font-size: 1.4rem;
 `;
-
-export const Button = ({ children, noBox, ...restProps }) =>
-  noBox ? (
-    <div {...restProps}>{children}</div>
-  ) : (
-    <ThickBox {...restProps}>{children}</ThickBox>
-  );
-
-export const UpDown = ({
-  onUp,
-  onDown,
-  upTitle,
-  downTitle,
-}) => (
-  <Flex col>
-    <Button noBox onClick={onUp}>
-      <CaretSquareUp size="20" title={upTitle} />
-    </Button>
-    <Button noBox onClick={onDown}>
-      <CaretSquareDown size="20" title={downTitle} />
-    </Button>
-  </Flex>
-);
-
-const Emoji = styled.span`
-  cursor: default;
-  -webkit-user-select: none; /* Chrome/Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+ */
-`;
-
-export const EmojiWrapper = ({ label, children }) => (
-  <Emoji role="img" aria-label={label}>
-    {children}
-  </Emoji>
-);
