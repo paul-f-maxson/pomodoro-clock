@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "eslint-plugin-react-hooks": "0.0.0",
+    "lodash": "^4.17.11",
+    "logrocket": "^0.6.17",
     "react": "^16.7.0-alpha.2",
     "react-dom": "^16.7.0-alpha.2",
     "react-scripts": "2.1.1",

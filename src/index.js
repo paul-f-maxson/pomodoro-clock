@@ -1,10 +1,15 @@
 import React, { createContext } from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import LogRocket from 'logrocket';
+
 import * as serviceWorker from './serviceWorker';
+
+import App from './App';
 
 export const ClockMachineContext = createContext();
 export const SendersContext = createContext();
+
+LogRocket.init('vpvdm9/pomodoro-clock');
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

@@ -1,5 +1,20 @@
 import { useState, useMemo, useEffect } from 'react';
 import { interpret } from 'xstate/lib/interpreter';
+import { eventNames as possibleClockEvents } from '../PomodoroClockMachine';
+
+// Create methods to send all of the events possible on the clock machine
+const makeSenders = send =>
+  Object.fromEntries(
+    Object.entries(possibleClockEvents).map(
+      ([eventName, eventString]) => [
+        eventName,
+        () => send(eventString),
+      ]
+    )
+  );
+
+export const useSenders = send =>
+  useMemo(() => makeSenders(send), [send]);
 
 export default (machineBuilder, machineBuilderDeps) => {
   const machine = useMemo(
@@ -15,7 +30,9 @@ export default (machineBuilder, machineBuilderDeps) => {
     () => {
       const service = interpret(machine);
       service.init();
-      service.onTransition(newState => setState(newState));
+      service.onTransition(newState => {
+        setState(newState);
+      });
       service.onChange(setContext);
       return service;
     },
