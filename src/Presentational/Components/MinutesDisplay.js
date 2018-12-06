@@ -6,26 +6,26 @@ import { CaretSquareDown } from 'styled-icons/fa-regular/CaretSquareDown';
 
 import { Flex, Button } from './Universal';
 
-import { ClockMachineContext } from '../../';
+import {
+  ClockMachineServiceContext,
+  SendersContext,
+} from '../../';
 
-import { useService, useSenders } from '../../UseMachine';
+import { useServiceForContext } from '../../UseMachine';
 
 import { eventNames as possibleClockEvents } from '../../PomodoroClockMachine';
 
 // TIME AMOUNTS CONTROLS
 
 const makeUpDown = (
-  sendersKeyUp,
-  sendersKeyDown,
+  sendersKeyForUp,
+  sendersKeyForDown,
   upTitle,
   downTitle
 ) => () => {
-  const machine = useContext(ClockMachineContext);
-  const { service } = useService(machine);
-  const { send } = service;
-  const senders = useSenders(send);
-  const onUp = senders[sendersKeyUp];
-  const onDown = senders[sendersKeyDown];
+  const senders = useContext(SendersContext);
+  const onUp = senders[sendersKeyForUp];
+  const onDown = senders[sendersKeyForDown];
 
   return (
     <Flex col>
@@ -63,8 +63,15 @@ const TimeAmountSpan = styled.span`
   font-size: 3.4rem;
 `;
 
+// Factory for the number-of-minutes components
 const makeTimeAmount = machineContextKey => () => {
-  const { context } = useContext(ClockMachineContext);
+  const { service, initialContext } = useContext(
+    ClockMachineServiceContext
+  );
+  const context = useServiceForContext(
+    service,
+    initialContext
+  );
   return (
     <TimeAmountSpan>
       {String(context[machineContextKey]).padStart(2, '0')}

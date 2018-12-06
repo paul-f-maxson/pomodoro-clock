@@ -3,21 +3,40 @@ import Presentational from './Presentational';
 
 import {
   machineBuilder as clockMachineBuilder,
-  machineBuilderDeps as clockMachineBuilderDeps,
+  eventNames as possibleClockEvents,
 } from './PomodoroClockMachine';
-import { useMachine } from './UseMachine';
+import { useMachine, useSenders } from './UseMachine';
 
-import { ClockMachineContext } from './';
+import {
+  ClockMachineServiceContext,
+  SendersContext,
+} from './';
+
+const machine = clockMachineBuilder();
 
 export default () => {
-  const machine = useMachine(
-    clockMachineBuilder,
-    clockMachineBuilderDeps
+  const service = useMachine(machine);
+  const senders = useSenders(
+    service.send,
+    possibleClockEvents
   );
 
+  const { initialState, context } = machine;
+  const initialContext = context;
+
+  const serviceContext = {
+    service,
+    initialState,
+    initialContext,
+  };
+
   return (
-    <ClockMachineContext.Provider value={machine}>
-      <Presentational />
-    </ClockMachineContext.Provider>
+    <ClockMachineServiceContext.Provider
+      value={serviceContext}
+    >
+      <SendersContext.Provider value={senders}>
+        <Presentational />
+      </SendersContext.Provider>
+    </ClockMachineServiceContext.Provider>
   );
 };

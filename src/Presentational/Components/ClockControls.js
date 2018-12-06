@@ -5,9 +5,12 @@ import { Flex, Button, EmojiWrapper } from './Universal';
 
 import { eventNames as possibleClockEvents } from '../../PomodoroClockMachine';
 
-import { ClockMachineContext } from '../../';
+import {
+  ClockMachineServiceContext,
+  SendersContext,
+} from '../../';
 
-import { useSenders, useService } from '../../UseMachine';
+import { useServiceForState } from '../../UseMachine';
 
 const ClockControlsBox = styled.div`
   border: 0.1rem solid darkgray;
@@ -25,21 +28,19 @@ const clockControlsConfig = {
 };
 
 export default (function(clockControlsConfig) {
+  // IIFE called with clockControlsConfig
   const clockControls = Object.fromEntries(
     Object.entries(clockControlsConfig).map(
       ([eventName, data]) => {
         const { emoji, label } = data;
 
         const ClockControl = () => {
-          const machine = useContext(ClockMachineContext);
-          const { service } = useService(machine);
-          const { send } = service;
-          const senders = useSenders(send);
+          const senders = useContext(SendersContext);
           const sender = senders[eventName];
 
           return (
             <Fragment key={label}>
-              <Button onClick={sender}>
+              <Button onClick={() => sender()}>
                 <EmojiWrapper label={label}>
                   {emoji}
                 </EmojiWrapper>
@@ -54,8 +55,11 @@ export default (function(clockControlsConfig) {
   );
 
   return () => {
-    const machine = useContext(ClockMachineContext);
-    const { state } = useService(machine);
+    const { service, initialState } = useContext(
+      ClockMachineServiceContext
+    );
+
+    const state = useServiceForState(service, initialState);
     return (
       <ClockControlsBox>
         <Flex row>

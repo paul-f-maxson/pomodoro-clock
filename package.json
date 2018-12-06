@@ -42,6 +42,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "babel-plugin-styled-components": "^1.9.1"
+    "babel-plugin-styled-components": "^1.9.1",
+    "object.fromentries": "^2.0.0"
   }
 }

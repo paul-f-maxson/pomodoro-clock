@@ -2,9 +2,12 @@ import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 // import LogRocket from 'logrocket';
 
-import { useService, useSenders } from '../../UseMachine';
+import { useServiceForContext } from '../../UseMachine';
 
-import { ClockMachineContext } from '../../';
+import {
+  ClockMachineServiceContext,
+  SendersContext,
+} from '../../';
 
 const DigitalClock = styled.time`
   font-size: 4rem;
@@ -13,13 +16,16 @@ const DigitalClock = styled.time`
 `;
 
 export default () => {
-  const machine = useContext(ClockMachineContext);
-  const { context, service } = useService(machine);
+  const { service, initialContext } = useContext(
+    ClockMachineServiceContext
+  );
+  const context = useServiceForContext(
+    service,
+    initialContext
+  );
   const { time } = context;
 
-  const { send } = service;
-
-  const senders = useSenders(send);
+  const senders = useContext(SendersContext);
 
   // TODO: Implement the ticker inside the machine
   // Set interval to send TICK event every second
@@ -33,7 +39,7 @@ export default () => {
         clearInterval(ticker);
       };
     },
-    [send]
+    [senders]
   );
 
   const minutes = time.getMinutes();
