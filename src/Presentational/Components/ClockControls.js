@@ -16,6 +16,7 @@ const ClockControlsBox = styled.div`
   border: 0.1rem solid darkgray;
   border-radius: 0.1rem;
   padding: 1rem;
+  width: 14rem;
 `;
 
 const clockControlsConfig = {

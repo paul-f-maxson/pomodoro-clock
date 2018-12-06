@@ -14,7 +14,6 @@ import {
   TimeRemaining,
   WorkMinutes,
   BreakMinutes,
-  Flex,
 } from './Components';
 
 export default () => {
@@ -36,23 +35,13 @@ export default () => {
 
         <main>
           <Row>
-            <Col col={11} sm={6}>
-              <Flex col>
-                <TimeRemaining />
-                <ClockControls />
-              </Flex>
+            <Col auto>
+              <TimeRemaining />
+              <ClockControls />
             </Col>
             <Col auto>
-              <Row alignItems="center">
-                <Col>
-                  <WorkMinutes />
-                </Col>
-              </Row>
-              <Row>
-                <Col auto>
-                  <BreakMinutes />
-                </Col>
-              </Row>
+              <WorkMinutes />
+              <BreakMinutes />
             </Col>
           </Row>
         </main>
