@@ -5,7 +5,6 @@ import LogRocket from 'logrocket';
 import * as serviceWorker from './serviceWorker';
 
 import App from './App';
-console.log(App);
 
 export const ClockMachineServiceContext = createContext();
 export const SendersContext = createContext();
