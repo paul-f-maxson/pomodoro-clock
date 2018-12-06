@@ -15,8 +15,9 @@ import { useServiceForState } from '../../UseMachine';
 const ClockControlsBox = styled.div`
   border: 0.1rem solid darkgray;
   border-radius: 0.1rem;
-  padding: 1rem;
-  width: 14rem;
+  padding: 0.5rem;
+  margin: 0 0 0.3rem 0;
+  width: 11rem;
 `;
 
 const clockControlsConfig = {

@@ -17,7 +17,6 @@ import {
 } from './Components';
 
 export default () => {
-  // NOTE: I didn't really like the bootstrap grid system I used here, maybe use a different one.
   return (
     <>
       <GlobalStyle />
@@ -36,8 +35,8 @@ export default () => {
         <main>
           <Row>
             <Col auto>
-              <TimeRemaining />
               <ClockControls />
+              <TimeRemaining />
             </Col>
             <Col auto>
               <WorkMinutes />
