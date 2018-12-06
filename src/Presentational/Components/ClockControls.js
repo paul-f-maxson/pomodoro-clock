@@ -71,10 +71,10 @@ export default (function(clockControlsConfig) {
             ? clockControls.RUN
             : clockControls.RESET}
           {state.nextEvents.includes(
-            possibleClockEvents.PAUSE
+            possibleClockEvents.RESUME
           )
-            ? clockControls.PAUSE
-            : clockControls.RESUME}
+            ? clockControls.RESUME
+            : clockControls.PAUSE}
           {state.nextEvents.includes(
             possibleClockEvents.CONTINUE
           )

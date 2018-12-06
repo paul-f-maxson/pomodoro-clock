@@ -9,6 +9,7 @@ import {
 import {
   GlobalStyle,
   HeaderDivider,
+  StateDisplay,
   ClockControls,
   PageTitle,
   TimeRemaining,
@@ -35,6 +36,11 @@ export default () => {
         <HeaderDivider />
 
         <main>
+          <Row>
+            <Col>
+              <StateDisplay />
+            </Col>
+          </Row>
           <Row>
             <Col col={11} sm={6}>
               <Flex col>

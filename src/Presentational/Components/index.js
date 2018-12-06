@@ -1,5 +1,6 @@
 import { GlobalStyle, Flex } from './Universal';
 import { PageTitle, HeaderDivider } from './Header';
+import StateDisplay from './StateDisplay';
 import ClockControls from './ClockControls';
 import TimeRemaining from './TimeRemaining';
 import {
@@ -10,6 +11,7 @@ import {
 export {
   GlobalStyle,
   HeaderDivider,
+  StateDisplay,
   ClockControls,
   PageTitle,
   TimeRemaining,
