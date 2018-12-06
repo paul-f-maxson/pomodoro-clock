@@ -1,5 +1,3 @@
-const guards = {
+export default {
   timerAtZero: ctx => ctx.time.getTime() <= 0,
 };
-
-export default guards;

@@ -21,7 +21,7 @@ const incrementBoundCtxValueAction = (
 const assignCtxBool = (valueName, truthValue) =>
   assign({ [valueName]: truthValue });
 
-const actions = {
+export default {
   resetContextToDefault: assign(defaultContext),
   tickTimer: assign({
     time: ctx => new Date(ctx.time - 1000),
@@ -71,5 +71,3 @@ const actions = {
     1
   ),
 };
-
-export default actions;

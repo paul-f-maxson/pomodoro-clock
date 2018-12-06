@@ -15,11 +15,9 @@ import {
   TimeRemaining,
   WorkMinutes,
   BreakMinutes,
-  Flex,
 } from './Components';
 
 export default () => {
-  // NOTE: I didn't really like the bootstrap grid system I used here, maybe use a different one.
   return (
     <>
       <GlobalStyle />
@@ -37,6 +35,7 @@ export default () => {
 
         <main>
           <Row>
+<<<<<<< HEAD
             <Col>
               <StateDisplay />
             </Col>
@@ -47,18 +46,15 @@ export default () => {
                 <TimeRemaining />
                 <ClockControls />
               </Flex>
+=======
+            <Col auto>
+              <ClockControls />
+              <TimeRemaining />
+>>>>>>> develop
             </Col>
             <Col auto>
-              <Row alignItems="center">
-                <Col>
-                  <WorkMinutes />
-                </Col>
-              </Row>
-              <Row>
-                <Col auto>
-                  <BreakMinutes />
-                </Col>
-              </Row>
+              <WorkMinutes />
+              <BreakMinutes />
             </Col>
           </Row>
         </main>

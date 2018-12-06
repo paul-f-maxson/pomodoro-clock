@@ -15,7 +15,9 @@ import { useServiceForState } from '../../UseMachine';
 const ClockControlsBox = styled.div`
   border: 0.1rem solid darkgray;
   border-radius: 0.1rem;
-  padding: 1rem;
+  padding: 0.5rem;
+  margin: 0 0 0.3rem 0;
+  width: 11rem;
 `;
 
 const clockControlsConfig = {
@@ -27,38 +29,49 @@ const clockControlsConfig = {
   SNOOZE: { emoji: '🛌', label: 'snooze alarm' },
 };
 
-export default (function(clockControlsConfig) {
-  // IIFE called with clockControlsConfig
-  const clockControls = Object.fromEntries(
-    Object.entries(clockControlsConfig).map(
-      ([eventName, data]) => {
-        const { emoji, label } = data;
+const clockControls = Object.fromEntries(
+  Object.entries(clockControlsConfig).map(
+    ([eventName, data]) => {
+      const { emoji, label } = data;
 
-        const ClockControl = () => {
-          const senders = useContext(SendersContext);
-          const sender = senders[eventName];
+      const ClockControl = () => {
+        const senders = useContext(SendersContext);
+        const sender = senders[eventName];
 
-          return (
-            <Fragment key={label}>
-              <Button onClick={() => sender()}>
-                <EmojiWrapper label={label}>
-                  {emoji}
-                </EmojiWrapper>
-              </Button>
-            </Fragment>
-          );
-        };
+        return (
+          <Fragment key={label}>
+            <Button onClick={sender}>
+              <EmojiWrapper label={label}>
+                {emoji}
+              </EmojiWrapper>
+            </Button>
+          </Fragment>
+        );
+      };
+      return [eventName, <ClockControl />];
+    }
+  )
+);
 
-        return [eventName, <ClockControl />];
-      }
-    )
+const EmptyButton = () => <Button />;
+
+const makeDualOptionalControl = (...args) => props => {
+  const [optionAKey, optionBKey] = args;
+  const { nextEvents } = props;
+  const containsOptionA = nextEvents.includes(
+    possibleClockEvents[optionAKey]
+  );
+  const containsOptionB = nextEvents.includes(
+    possibleClockEvents[optionBKey]
   );
 
-  return () => {
-    const { service, initialState } = useContext(
-      ClockMachineServiceContext
+  if (containsOptionA && containsOptionB) {
+    throw new Error(
+      `${optionAKey} and ${optionBKey} should not be accessible at the same time.`
     );
+  }
 
+<<<<<<< HEAD
     const state = useServiceForState(service, initialState);
     return (
       <ClockControlsBox>
@@ -90,3 +103,58 @@ export default (function(clockControlsConfig) {
     );
   };
 })(clockControlsConfig);
+=======
+  return containsOptionA
+    ? clockControls[optionAKey]
+    : containsOptionB
+    ? clockControls[optionBKey]
+    : EmptyButton;
+};
+
+const makeOptionalControl = optionKey => props => {
+  const { nextEvents } = props;
+  const containsOption = nextEvents.includes(
+    possibleClockEvents[optionKey]
+  );
+
+  return containsOption
+    ? clockControls[optionKey]
+    : EmptyButton;
+};
+
+// MAKE CONTROLS
+const RunResetControl = makeDualOptionalControl(
+  possibleClockEvents.RUN,
+  possibleClockEvents.RESET
+);
+const PauseResumeControl = makeDualOptionalControl(
+  possibleClockEvents.PAUSE,
+  possibleClockEvents.Resume
+);
+
+const ContinueControl = makeOptionalControl(
+  possibleClockEvents.CONTINUE
+);
+const SnoozeControl = makeOptionalControl(
+  possibleClockEvents.SNOOZE
+);
+
+export default () => {
+  const { service, initialState } = useContext(
+    ClockMachineServiceContext
+  );
+
+  const state = useServiceForState(service, initialState);
+  const { nextEvents } = state;
+  return (
+    <ClockControlsBox>
+      <Flex row>
+        <RunResetControl nextEvents={nextEvents} />
+        <PauseResumeControl nextEvents={nextEvents} />
+        <ContinueControl nextEvents={nextEvents} />
+        <SnoozeControl nextEvents={nextEvents} />
+      </Flex>
+    </ClockControlsBox>
+  );
+};
+>>>>>>> develop

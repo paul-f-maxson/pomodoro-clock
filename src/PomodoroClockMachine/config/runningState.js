@@ -3,14 +3,8 @@ const runningState = {
   on: { PAUSE: 'Paused', RESET: 'Set' },
   initial: 'Working',
   invoke: {
-    id: 'tickTimer',
-    src: (ctx, event) => callback => {
-      // This will send the 'TICK' event to the parent every second
-      const id = setInterval(() => callback('TICK'), 1000);
-
-      // Perform cleanup
-      return () => clearInterval(id);
-    },
+    id: 'runningTickTimer',
+    src: 'tickTimer',
   },
   states: {
     hist: { type: 'history' },
