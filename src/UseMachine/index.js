@@ -29,22 +29,6 @@ export const useMachine = machine => {
   return service;
 };
 
-// Create an object of methods to send all of the events possible on the clock machine
-// Shaped like { EVENT_NAME: () => send('EVENT_NAME'), }
-export const useSenders = (send, possibleEvents) =>
-  useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(possibleEvents).map(
-          ([eventName, eventString]) => [
-            eventName,
-            () => send(eventString),
-          ]
-        )
-      ),
-    [send, possibleEvents]
-  );
-
 // TODO: Caller can pass an object of keys for the specific part of context or state they care about
 
 export const useServiceForContext = (service, init) => {

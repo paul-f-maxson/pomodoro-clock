@@ -14,13 +14,10 @@ import config from './config/';
  * Finally, [(INC),(DEC)]_[(WORK),(BREAK)]_MINS events can be sent to change the timer settings.
  */
 
-export const machineBuilder = () =>
-  Machine(config, {
-    actions,
-    guards,
-  });
-
-export const machineBuilderDeps = [config, actions, guards];
+export const machine = Machine(config, {
+  actions,
+  guards,
+});
 
 // Add any new events defined on the machine to this array
 export const eventNames = {
@@ -36,3 +33,15 @@ export const eventNames = {
   INC_BREAK_MINS: 'INC_BREAK_MINS',
   DEC_BREAK_MINS: 'DEC_BREAK_MINS',
 };
+
+// Create an object of methods to send all of the events possible on the clock machine
+// Shaped like { EVENT_NAME: () => send('EVENT_NAME'), }
+export const makeEventSenders = send =>
+  Object.fromEntries(
+    Object.entries(eventNames).map(
+      ([eventName, eventString]) => [
+        eventName,
+        () => send(eventString),
+      ]
+    )
+  );

@@ -1,27 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Presentational from './Presentational';
 
 import {
-  machineBuilder as clockMachineBuilder,
-  eventNames as possibleClockEvents,
+  machine as clockMachine,
+  makeEventSenders as makeClockEventSenders,
 } from './PomodoroClockMachine';
-import { useMachine, useSenders } from './UseMachine';
+import { useMachine } from './UseMachine';
 
 import {
   ClockMachineServiceContext,
   SendersContext,
 } from './';
 
-const machine = clockMachineBuilder();
-
 export default () => {
-  const service = useMachine(machine);
-  const senders = useSenders(
-    service.send,
-    possibleClockEvents
+  const service = useMachine(clockMachine);
+  const senders = useMemo(
+    () => makeClockEventSenders(service.send),
+    [service.send]
   );
 
-  const { initialState, context } = machine;
+  const { initialState, context } = clockMachine;
   const initialContext = context;
 
   const serviceContext = {
