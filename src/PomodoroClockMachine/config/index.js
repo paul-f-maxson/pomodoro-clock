@@ -28,6 +28,7 @@ const config = {
     },
     Snoozing: {
       id: 'Snoozing',
+      invoke: 'tickTimer',
       states: {},
       on: {
         // when TICK is recieved, perform the tickTimer action, moving to 'Running.hist' when the timer reaches zero
@@ -43,6 +44,8 @@ const config = {
           target: 'Running.hist',
           actions: 'setTimerToZero',
         },
+        RESET: 'Set',
+        PAUSE: 'Paused',
       },
     },
     Running: runningState,

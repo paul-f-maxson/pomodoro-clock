@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import Presentational from './Presentational';
 
-import {
-  machine as clockMachine,
+import clockMachine, {
   makeEventSenders as makeClockEventSenders,
 } from './PomodoroClockMachine';
 import { useMachine } from './UseMachine';

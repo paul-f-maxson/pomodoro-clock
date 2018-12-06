@@ -46,17 +46,12 @@ const clockControls = Object.fromEntries(
           </Fragment>
         );
       };
-
       return [eventName, <ClockControl />];
     }
   )
 );
 
-const EmptyButton = () => (
-  <Button noBox>
-    <EmojiWrapper label={'Blank'}> </EmojiWrapper>
-  </Button>
-);
+const EmptyButton = () => <Button />;
 
 const makeDualOptionalControl = (...args) => props => {
   const [optionAKey, optionBKey] = args;
@@ -92,7 +87,7 @@ const makeOptionalControl = optionKey => props => {
     : EmptyButton;
 };
 
-// Make Controls
+// MAKE CONTROLS
 const RunResetControl = makeDualOptionalControl(
   possibleClockEvents.RUN,
   possibleClockEvents.RESET

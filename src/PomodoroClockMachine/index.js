@@ -1,7 +1,8 @@
 import { Machine } from 'xstate';
 import actions from './actions';
 import guards from './guards';
-import config from './config/';
+import services from './services';
+import config from './config';
 
 /*
  * The primary function of this Machine is to alternate between two main states, Working and TakingBreak, which represent the work and break states of a Pomodoro Clock. In these states (as well as the Snooze state, explanation below), the Machine decrements the time context by one second in response to TICK events. When the timer reaches zero, the machine advances to an intermediate state that triggers the alarm to ring, and then on to the other timer state when a CONTINUE event is recieved. The above states are all internal to the Running state.
@@ -14,9 +15,10 @@ import config from './config/';
  * Finally, [(INC),(DEC)]_[(WORK),(BREAK)]_MINS events can be sent to change the timer settings.
  */
 
-export const machine = Machine(config, {
+export default Machine(config, {
   actions,
   guards,
+  services,
 });
 
 // Add any new events defined on the machine to this array
