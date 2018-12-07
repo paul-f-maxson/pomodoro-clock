@@ -61,6 +61,7 @@ const TimeAmountSpan = styled.span`
   font-family: Arial;
   font-weight: bold;
   font-size: 3.4rem;
+  width: 3.7rem;
 `;
 
 // Factory for the number-of-minutes components
@@ -95,7 +96,7 @@ const makeVerticalWords = text => {
 };
 
 const TimeAmountLabel = styled.div`
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   font-weight: bold;
   font-size: 1.4rem;
 `;

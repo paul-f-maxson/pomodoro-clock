@@ -53,7 +53,8 @@ export default {
   incWorkMins: incrementBoundCtxValueAction(
     'workMinutes',
     1,
-    1
+    NaN,
+    60
   ),
   decWorkMins: incrementBoundCtxValueAction(
     'workMinutes',
@@ -63,7 +64,8 @@ export default {
   incBreakMins: incrementBoundCtxValueAction(
     'breakMinutes',
     1,
-    1
+    NaN,
+    60
   ),
   decBreakMins: incrementBoundCtxValueAction(
     'breakMinutes',
