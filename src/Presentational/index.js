@@ -12,6 +12,7 @@ import {
   StateDisplay,
   ClockControls,
   PageTitle,
+  Flex,
   TimeRemaining,
   WorkMinutes,
   BreakMinutes,
@@ -35,22 +36,13 @@ export default () => {
 
         <main>
           <Row>
-<<<<<<< HEAD
-            <Col>
-              <StateDisplay />
-            </Col>
-          </Row>
-          <Row>
-            <Col col={11} sm={6}>
-              <Flex col>
-                <TimeRemaining />
-                <ClockControls />
-              </Flex>
-=======
             <Col auto>
-              <ClockControls />
+              <Flex row spaceBetweenKids="0.2rem">
+                <ClockControls />
+                <StateDisplay />
+              </Flex>
+
               <TimeRemaining />
->>>>>>> develop
             </Col>
             <Col auto>
               <WorkMinutes />

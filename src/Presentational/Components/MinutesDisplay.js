@@ -125,7 +125,7 @@ const makeTimeAmountDisplay = (
 ) => () => (
   <Flex row alignItems="center">
     <UpDown />
-    <Flex remBetweenKids={0.2} row>
+    <Flex spaceBetweenKids="0.2rem" row>
       <TimeAmount />
       <TimeAmountLabel />
     </Flex>

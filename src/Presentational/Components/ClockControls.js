@@ -1,7 +1,11 @@
 import React, { Fragment, useContext } from 'react';
-import styled from 'styled-components';
 
-import { Flex, Button, EmojiWrapper } from './Universal';
+import {
+  Flex,
+  Button,
+  EmojiWrapper,
+  ThinBox,
+} from './Universal';
 
 import { eventNames as possibleClockEvents } from '../../PomodoroClockMachine';
 
@@ -11,14 +15,6 @@ import {
 } from '../../';
 
 import { useServiceForState } from '../../UseMachine';
-
-const ClockControlsBox = styled.div`
-  border: 0.1rem solid darkgray;
-  border-radius: 0.1rem;
-  padding: 0.5rem;
-  margin: 0 0 0.3rem 0;
-  width: 11rem;
-`;
 
 const clockControlsConfig = {
   RUN: { emoji: '🎬', label: 'run clock' },
@@ -71,39 +67,6 @@ const makeDualOptionalControl = (...args) => props => {
     );
   }
 
-<<<<<<< HEAD
-    const state = useServiceForState(service, initialState);
-    return (
-      <ClockControlsBox>
-        <Flex row>
-          {/* TODO: I would really like this to only render eg, the reset control if nextEvents includes RESET, but to implement it using this logic would be a nightmare */}
-          {/* TODO: I would also like to just automatically render the buttons for all of the available events, but I want to preserve the order of the buttons and I want to semantically show that e.g. RUN and RESET use the same physical space */}
-          {state.nextEvents.includes(
-            possibleClockEvents.RUN
-          )
-            ? clockControls.RUN
-            : clockControls.RESET}
-          {state.nextEvents.includes(
-            possibleClockEvents.RESUME
-          )
-            ? clockControls.RESUME
-            : clockControls.PAUSE}
-          {state.nextEvents.includes(
-            possibleClockEvents.CONTINUE
-          )
-            ? clockControls.CONTINUE
-            : null}
-          {state.nextEvents.includes(
-            possibleClockEvents.SNOOZE
-          )
-            ? clockControls.SNOOZE
-            : null}
-        </Flex>
-      </ClockControlsBox>
-    );
-  };
-})(clockControlsConfig);
-=======
   return containsOptionA
     ? clockControls[optionAKey]
     : containsOptionB
@@ -147,14 +110,13 @@ export default () => {
   const state = useServiceForState(service, initialState);
   const { nextEvents } = state;
   return (
-    <ClockControlsBox>
-      <Flex row>
+    <ThinBox width="11rem">
+      <Flex row alignItems="flex-end">
         <RunResetControl nextEvents={nextEvents} />
         <PauseResumeControl nextEvents={nextEvents} />
         <ContinueControl nextEvents={nextEvents} />
         <SnoozeControl nextEvents={nextEvents} />
       </Flex>
-    </ClockControlsBox>
+    </ThinBox>
   );
 };
->>>>>>> develop

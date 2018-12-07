@@ -7,6 +7,8 @@ import styled, {
 
 export const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Orbitron');
+
+  @import url('https://fonts.googleapis.com/css?family=Roboto');
 `;
 
 // FLEX
@@ -19,23 +21,28 @@ export const Flex = styled.div`
     justifyContent};
 
   ${
-    '' /* Set the passed value as the padding at the ends of the major axis and as the margin on children in the same direction. */
+    '' /* Set the passed value as the padding at the ends of the major axis and as the margin (along the same) on children. */
   }
-  padding: ${({ remBetweenKids, row }) => {
-    const remBtw = `${remBetweenKids}rem`;
-    return row
-      ? `0 ${remBtw} 0 ${remBtw}`
-      : `${remBtw} 0 ${remBtw} 0`;
-  }};
+  padding: ${({ spaceBetweenKids, col }) =>
+    col
+      ? `${spaceBetweenKids} 0 ${spaceBetweenKids} 0`
+      : `0 ${spaceBetweenKids} 0 ${spaceBetweenKids}`};
 
   > * {
-    margin: ${({ remBetweenKids, row }) => {
-      const remBtw = `${remBetweenKids}rem`;
-      return row
-        ? `0 ${remBtw} 0 ${remBtw}`
-        : `${remBtw} 0 ${remBtw} 0`;
-    }};
+    margin: ${({ spaceBetweenKids, col }) =>
+      col
+        ? `${spaceBetweenKids} 0 ${spaceBetweenKids} 0`
+        : `0 ${spaceBetweenKids} 0 ${spaceBetweenKids}`};
   }
+`;
+
+// THIN BOX
+
+export const ThinBox = styled.div`
+  border: 0.1rem solid darkgray;
+  border-radius: 0.1rem;
+  padding: 0.5rem;
+  width: ${({ width }) => width};
 `;
 
 // EMOJI
