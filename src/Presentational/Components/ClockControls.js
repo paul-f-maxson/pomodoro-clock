@@ -53,10 +53,13 @@ const EmptyButton = () => <Button />;
 
 const makeDualOptionalControl = (...args) => props => {
   const [optionAKey, optionBKey] = args;
+
   const { nextEvents } = props;
+
   const containsOptionA = nextEvents.includes(
     possibleClockEvents[optionAKey]
   );
+
   const containsOptionB = nextEvents.includes(
     possibleClockEvents[optionBKey]
   );
@@ -90,6 +93,7 @@ const RunResetControl = makeDualOptionalControl(
   possibleClockEvents.RUN,
   possibleClockEvents.RESET
 );
+
 const PauseResumeControl = makeDualOptionalControl(
   possibleClockEvents.PAUSE,
   possibleClockEvents.Resume
@@ -98,6 +102,7 @@ const PauseResumeControl = makeDualOptionalControl(
 const ContinueControl = makeOptionalControl(
   possibleClockEvents.CONTINUE
 );
+
 const SnoozeControl = makeOptionalControl(
   possibleClockEvents.SNOOZE
 );

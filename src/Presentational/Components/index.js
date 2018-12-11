@@ -3,6 +3,7 @@ import { PageTitle, HeaderDivider } from './Header';
 import StateDisplay from './StateDisplay';
 import ClockControls from './ClockControls';
 import TimeRemaining from './TimeRemaining';
+import AlarmAudio from './AlarmAudio';
 import {
   WorkMinutes,
   BreakMinutes,
@@ -12,6 +13,7 @@ export {
   GlobalStyle,
   HeaderDivider,
   StateDisplay,
+  AlarmAudio,
   ClockControls,
   PageTitle,
   TimeRemaining,

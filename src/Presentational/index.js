@@ -11,6 +11,7 @@ import {
   HeaderDivider,
   StateDisplay,
   ClockControls,
+  AlarmAudio,
   PageTitle,
   Flex,
   TimeRemaining,
@@ -41,8 +42,11 @@ export default () => {
                 <ClockControls />
                 <StateDisplay />
               </Flex>
-
               <TimeRemaining />
+              <AlarmAudio
+                volume={0.5}
+                src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+              />
             </Col>
             <Col auto>
               <WorkMinutes />

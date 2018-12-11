@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "eslint-plugin-react-hooks": "0.0.0",
-    "lodash": "^4.17.11",
+    "flow-bin": "^0.87.0",
     "logrocket": "^0.6.17",
     "react": "^16.7.0-alpha.2",
     "react-dom": "^16.7.0-alpha.2",
@@ -18,7 +18,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "flow": "flow"
   },
   "eslintConfig": {
     "extends": "react-app",
