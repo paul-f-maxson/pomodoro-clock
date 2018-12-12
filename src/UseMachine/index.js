@@ -4,22 +4,18 @@ import LogRocket from 'logrocket';
 
 // Create, initialize, and return an xstate machine service
 export const useMachine = machine => {
-  const service = useMemo(() => interpret(machine), [
-    machine,
-  ]);
+  const service = useMemo(() => interpret(machine), [machine]);
 
   service.onTransition((newState, event) => {
-    LogRocket.info({
-      desc: 'Machine state change',
-      data: { event: event, new: newState },
-    });
-  });
-
-  service.onChange((newContext, previousContext) => {
-    LogRocket.info({
-      desc: 'Machine context change',
-      data: { old: previousContext, new: newContext },
-    });
+    if (event.type !== 'TICK') {
+      LogRocket.info({
+        desc: 'Machine state change',
+        data: {
+          event: event,
+          new: { newState, stateStrings: newState.toStrings() },
+        },
+      });
+    }
   });
 
   service.init();
