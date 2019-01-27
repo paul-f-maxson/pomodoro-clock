@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 
+// Disabling because font implementation is outside the scope of this rule
+// eslint-disable-next-line no-unused-vars
+import RobotoMono from "typeface-orbitron";
+
 import { Flex, ThinBox } from './Universal';
 
 import { ClockMachineServiceContext } from '../../';
@@ -8,7 +12,7 @@ import { ClockMachineServiceContext } from '../../';
 import { useServiceForState } from '../../UseMachine';
 
 const StateH2 = styled.h2`
-  font-family: 'Roboto Mono', monospace;
+  font-family: RobotoMono, monospace;
   line-height: 0;
 `;
 

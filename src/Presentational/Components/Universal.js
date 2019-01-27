@@ -1,15 +1,6 @@
 import React from 'react';
 import styled, {
-  createGlobalStyle,
 } from 'styled-components';
-
-// GLOBAL STYLE
-
-export const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css?family=Orbitron');
-
-  @import url('https://fonts.googleapis.com/css?family=Roboto');
-`;
 
 // FLEX
 

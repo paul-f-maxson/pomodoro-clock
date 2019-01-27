@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-// import LogRocket from 'logrocket';
+
+// Disabling because font implementation is outside the scope of this rule
+// eslint-disable-next-line no-unused-vars
+import Orbitron from "typeface-orbitron";
 
 import { useServiceForContext } from '../../UseMachine';
 

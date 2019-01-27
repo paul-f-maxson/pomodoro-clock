@@ -1,4 +1,4 @@
-import { GlobalStyle, Flex } from './Universal';
+import { Flex } from './Universal';
 import { PageTitle, HeaderDivider } from './Header';
 import StateDisplay from './StateDisplay';
 import ClockControls from './ClockControls';
@@ -10,7 +10,6 @@ import {
 } from './MinutesDisplay';
 
 export {
-  GlobalStyle,
   HeaderDivider,
   StateDisplay,
   AlarmAudio,

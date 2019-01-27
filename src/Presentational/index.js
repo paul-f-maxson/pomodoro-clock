@@ -8,7 +8,6 @@ import {
 } from 'styled-bootstrap-grid';
 
 import {
-  GlobalStyle,
   HeaderDivider,
   StateDisplay,
   ClockControls,
@@ -23,7 +22,6 @@ import {
 export default () => {
   return (
     <>
-      <GlobalStyle />
       <BaseCSS />
       <Container>
         <header>
