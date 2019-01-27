@@ -1,101 +1,132 @@
-import React, { Fragment, useContext } from 'react';
+import React, { useContext } from 'react';
 
-import { Flex, Button, EmojiWrapper, ThinBox } from './Universal';
+import styled, { css, keyframes } from 'styled-components';
 
-import { eventNames as possibleClockEvents } from '../../PomodoroClockMachine';
+import { Play, Pause, PowerOff } from 'styled-icons/fa-solid';
+import { Snooze } from 'styled-icons/material';
+
+import { ThinBox, Button, Flex } from './Universal';
 
 import { ClockMachineServiceContext, SendersContext } from '../../';
 
 import { useServiceForState } from '../../UseMachine';
 
-const clockControlsConfig = {
-  RUN: { emoji: '🎬', label: 'run clock' },
-  RESET: { emoji: '🔄‍', label: 'reset clock' },
-  PAUSE: { emoji: '🧘‍', label: 'pause clock' },
-  RESUME: { emoji: '🏃', label: 'resume clock' },
-  CONTINUE: { emoji: '⏭️', label: 'advance clock' },
-  SNOOZE: { emoji: '🛌', label: 'snooze alarm' },
-};
+const glow = css`
+  animation: ${keyframes`
+    from {
+      color: black;
+    }
+    to {
+      color: limegreen;
+    }
+  `} 1s ease-in-out infinite alternate;
+`;
 
-const clockControls = Object.fromEntries(
-  Object.entries(clockControlsConfig).map(([eventName, data]) => {
-    const { emoji, label } = data;
-
-    const ClockControl = () => {
-      const senders = useContext(SendersContext);
-      const sender = senders[eventName];
-
-      return (
-        <Fragment key={label}>
-          <Button onClick={sender}>
-            <EmojiWrapper label={label}>{emoji}</EmojiWrapper>
-          </Button>
-        </Fragment>
-      );
-    };
-    return [eventName, <ClockControl />];
-  })
+const withButton = Component => ({ onClick, ...props }) => (
+  <Button onClick={onClick}>
+    <Component {...props} />
+  </Button>
 );
 
-const EmptyButton = () => <Button />;
+const withDisabledStyle = Component => styled(Component)`
+  filter: ${({ disabled }) => disabled ? "opacity(0.4)" : null}
+`;
 
-const makeDualOptionalControl = (...args) => props => {
-  const [optionAKey, optionBKey] = args;
+const Power = styled(PowerOff)`
+  ${({ powerOn }) => (powerOn ? glow : null)};
+`;
 
-  const { nextEvents } = props;
+const PowerButton = withButton(Power);
+PowerButton.defaultProps = { size: 25 };
 
-  const containsOptionA = nextEvents.includes(possibleClockEvents[optionAKey]);
+const PauseButton = withDisabledStyle(withButton(Pause));
+PauseButton.defaultProps = { size: 25 };
 
-  const containsOptionB = nextEvents.includes(possibleClockEvents[optionBKey]);
+const PlayButton = withDisabledStyle(withButton(Play));
+PlayButton.defaultProps = { size: 25 };
 
-  if (containsOptionA && containsOptionB) {
-    throw new Error(
-      `${optionAKey} and ${optionBKey} should not be accessible at the same time.`
-    );
-  }
+const SnoozeButton = withDisabledStyle(withButton(Snooze));
+SnoozeButton.defaultProps = { size: 28 };
 
-  return containsOptionA
-    ? clockControls[optionAKey]
-    : containsOptionB
-    ? clockControls[optionBKey]
-    : EmptyButton;
+const derivedStates = {
+  "Set": {
+    power: { powerOn: false, event: 'RUN', title: 'run clock' },
+    pause: { disabled: true },
+    play: { disabled: false, event: 'RUN', title: 'run clock' },
+    snooze: { disabled: true },
+  },
+  "Paused": {
+    power: { powerOn: true, event: 'RESET', title: 'reset clock' },
+    pause: { disabled: true },
+    play: { disabled: false, event: 'RESUME', title: 'resume clock' },
+    snooze: { disabled: true },
+  },
+  "Snoozing": {
+    power: { powerOn: true, event: 'RESET', title: 'reset clock' },
+    pause: { disabled: false, event: 'PAUSE', title: 'pause clock' },
+    play: { disabled: false, event: 'CONTINUE', title: 'advance clock' },
+    snooze: { disabled: true },
+  },
+  "Running.Working": {
+    power: { powerOn: true, event: 'RESET', title: 'reset clock' },
+    pause: { disabled: false, event: 'PAUSE', title: 'pause clock' },
+    play: { disabled: true },
+    snooze: { disabled: true },
+  },
+  "Running.EndofWork": {
+    power: { powerOn: true, event: 'RESET', title: 'reset clock' },
+    pause: { disabled: false, event: 'PAUSE', title: 'pause clock' },
+    play: { disabled: false, event: 'CONTINUE', title: 'advance clock' },
+    snooze: { disabled: false, event: 'SNOOZE', title: 'snooze alarm' },
+  },
+  "Running.TakingBreak": {
+    power: { powerOn: true, event: 'RESET', title: 'reset clock' },
+    pause: { disabled: false, event: 'PAUSE', title: 'pause clock' },
+    play: { disabled: true },
+    snooze: { disabled: true },
+  },
+  "Running.EndofBreak": {
+    power: { powerOn: true, event: 'RESET', title: 'reset clock' },
+    pause: { disabled: false, event: 'PAUSE', title: 'pause clock' },
+    play: { disabled: false, event: 'CONTINUE', title: 'advance clock' },
+    snooze: { disabled: false, event: 'SNOOZE', title: 'snooze alarm' },
+  },
 };
-
-const makeOptionalControl = optionKey => props => {
-  const { nextEvents } = props;
-  const containsOption = nextEvents.includes(possibleClockEvents[optionKey]);
-
-  return containsOption ? clockControls[optionKey] : EmptyButton;
-};
-
-// MAKE CONTROLS
-const RunResetControl = makeDualOptionalControl(
-  possibleClockEvents.RUN,
-  possibleClockEvents.RESET
-);
-
-const PauseResumeControl = makeDualOptionalControl(
-  possibleClockEvents.PAUSE,
-  possibleClockEvents.RESUME
-);
-
-const ContinueControl = makeOptionalControl(possibleClockEvents.CONTINUE);
-
-const SnoozeControl = makeOptionalControl(possibleClockEvents.SNOOZE);
 
 export default () => {
   const { service, initialState } = useContext(ClockMachineServiceContext);
+  const senders = useContext(SendersContext);
 
   const state = useServiceForState(service, initialState);
-  const { nextEvents } = state;
+
+  // Determine the desired state of the controls based on the state of the machine
+  const {power, pause, play, snooze} =
+    derivedStates[
+      Object.keys(derivedStates).filter(state.matches.bind(state))[0]
+    ];
+
   return (
-    <ThinBox width="11rem">
-      <Flex row alignItems="flex-end">
-        <RunResetControl nextEvents={nextEvents} />
-        <PauseResumeControl nextEvents={nextEvents} />
-        <ContinueControl nextEvents={nextEvents} />
-        <SnoozeControl nextEvents={nextEvents} />
-      </Flex>
-    </ThinBox>
+    <Flex alignItems="center" spaceBetweenKids="0.5rem">
+      <PowerButton
+        {...power}
+        onClick={senders[power.event]}
+      />
+      <ThinBox width="11rem">
+        <Flex spaceBetweenKids="0.7rem">
+          <PauseButton
+            {...pause}
+            onClick={senders[pause.event]}
+          />
+          <PlayButton
+            {...play}
+            onClick={senders[play.event]}
+          />
+          <SnoozeButton
+            {...snooze}
+            onClick={senders[snooze.event]}
+          />
+        </Flex>
+      </ThinBox>
+    </Flex>
   );
 };

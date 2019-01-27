@@ -36,6 +36,13 @@ export const Flex = styled.div`
   }
 `;
 
+Flex.defaultProps = {
+  col: false,
+  alignItems: "flex-start",
+  justifyContent: "start",
+  spaceBetweenKids: "0.1rem"
+}
+
 // THIN BOX
 
 export const ThinBox = styled.div`
