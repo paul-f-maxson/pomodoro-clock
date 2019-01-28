@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Pomodoro Clock",
+  "name": "Pomodoro Clock Productivity Tool",
   "icons": [
     {
       "src": "favicon.ico",
