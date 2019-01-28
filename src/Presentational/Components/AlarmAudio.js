@@ -1,9 +1,4 @@
-import React, {
-  Component,
-  useContext,
-  useMemo,
-  createRef,
-} from 'react';
+import React, { Component, useContext, useMemo, createRef } from 'react';
 
 import { ClockMachineServiceContext } from '../../';
 
@@ -24,10 +19,13 @@ class Audio extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.shouldBePlaying) 
-      this.audioRef.current
-        .play()
-        .catch(err => {throw err});
+    if (this.props.shouldBePlaying)
+      this.audioRef.current.play().catch(err => {
+        if (err.name === 'NotAllowedError' || err.name === 'NotSupportedError') {
+          console.error('Alarm chime cannot be played');
+          return null;
+        } else throw err;
+      });
     else this.audioRef.current.pause();
   }
 
