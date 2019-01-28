@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 // Disabling because font implementation is outside the scope of this rule
 // eslint-disable-next-line no-unused-vars
-import RobotoMono from 'typeface-orbitron';
+import RobotoMono from 'typeface-roboto-mono';
 
 import { ClockMachineServiceContext } from '../../';
 
