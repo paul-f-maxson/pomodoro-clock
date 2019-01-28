@@ -3,16 +3,16 @@ import styled from 'styled-components';
 
 // Disabling because font implementation is outside the scope of this rule
 // eslint-disable-next-line no-unused-vars
-import Orbitron from "typeface-orbitron";
+import PressStart2P from "typeface-press-start-2p";
 
 import { useServiceForContext } from '../../UseMachine';
 
 import { ClockMachineServiceContext } from '../../';
 
 const DigitalClock = styled.time`
-  font-size: 4rem;
-  font-family: Orbitron, Arial, sans-serif;
-  line-height: 1.25;
+  font-size: 3rem;
+  font-family: "Press Start 2P", monospace;
+  line-height: 1;
 `;
 
 export default () => {

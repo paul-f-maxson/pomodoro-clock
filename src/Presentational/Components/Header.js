@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { EmojiWrapper } from './Universal';
 
 const Title = styled.h1`
   text-align: center;
-  font-size: 4rem;
+  font-family: Arial, "sans-serif";
+  font-size: 2.5rem;
   margin: 0.5rem;
 `;
 
@@ -13,9 +13,7 @@ const Title = styled.h1`
 
 export const PageTitle = () => (
   <Title>
-    <EmojiWrapper label="app title">
-      ⏳&nbsp;🍎&nbsp;⏰
-    </EmojiWrapper>
+    Pomodoro Clock
   </Title>
 );
 

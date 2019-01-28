@@ -1,11 +1,6 @@
 import React from 'react';
 
-import {
-  BaseCSS,
-  Container,
-  Row,
-  Col,
-} from 'styled-bootstrap-grid';
+import { BaseCSS, Container, Row, Col } from 'styled-bootstrap-grid';
 
 import {
   HeaderDivider,
@@ -13,7 +8,6 @@ import {
   ClockControls,
   AlarmAudio,
   PageTitle,
-  Flex,
   TimeRemaining,
   WorkMinutes,
   BreakMinutes,
@@ -37,11 +31,10 @@ export default () => {
         <main>
           <Row>
             <Col auto>
-              <Flex row spaceBetweenKids="0.2rem">
-                <ClockControls />
-                <StateDisplay />
-              </Flex>
+              <StateDisplay />
               <TimeRemaining />
+              <ClockControls />
+
               <AlarmAudio
                 volume={0.5}
                 src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"

@@ -3,9 +3,7 @@ import styled from 'styled-components';
 
 // Disabling because font implementation is outside the scope of this rule
 // eslint-disable-next-line no-unused-vars
-import RobotoMono from "typeface-orbitron";
-
-import { Flex, ThinBox } from './Universal';
+import RobotoMono from 'typeface-orbitron';
 
 import { ClockMachineServiceContext } from '../../';
 
@@ -17,9 +15,7 @@ const StateH2 = styled.h2`
 `;
 
 export default () => {
-  const { service, initialState } = useContext(
-    ClockMachineServiceContext
-  );
+  const { service, initialState } = useContext(ClockMachineServiceContext);
   const state = useServiceForState(service, initialState);
   // Get the hierarchical lowest state only
   const lowestState = state
@@ -29,19 +25,13 @@ export default () => {
     .slice(-1);
 
   const displayText = {
-    Set: 'SET',
-    Working: 'WRK',
-    EndofWork: 'END',
-    EndofBreak: 'END',
-    TakingBreak: 'BRK',
-    Snoozing: 'SNZ',
-    Paused: 'PSE',
+    Set: 'READY',
+    Working: 'WORK',
+    EndofWork: 'ALARM',
+    EndofBreak: 'ALARM',
+    TakingBreak: 'BREAK',
+    Snoozing: 'SNOOZE',
+    Paused: 'PAUSE',
   }[lowestState];
-  return (
-    <ThinBox>
-      <Flex>
-        <StateH2>{displayText}</StateH2>
-      </Flex>
-    </ThinBox>
-  );
+  return <StateH2>{displayText}</StateH2>;
 };
