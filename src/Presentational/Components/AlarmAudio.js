@@ -24,15 +24,11 @@ class Audio extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const newProps = this.props;
-    console.debug({ desc: 'start of cdu', prevProps, newProps });
     if (this.props.shouldBePlaying) 
       this.audioRef.current
         .play()
-        .catch(err => console.error({ desc: 'play failed', err }));
+        .catch(err => {throw err});
     else this.audioRef.current.pause();
-    const { audioRef } = this;
-    console.debug({ desc: 'end of cdu', audioRef });
   }
 
   render() {

@@ -1,5 +1,5 @@
 const defaultContext = {
-  workMinutes: 1,
+  workMinutes: 20,
   breakMinutes: 5,
   snoozeMinutes: 1,
   time: new Date(0),
